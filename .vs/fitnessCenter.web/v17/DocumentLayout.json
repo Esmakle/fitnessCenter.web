@@ -78,7 +78,7 @@
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Document",
@@ -88,7 +88,7 @@
               "RelativeDocumentMoniker": "fitnessCenter.web\\Views\\TrainerAvailabilities\\Edit.cshtml",
               "ToolTip": "C:\\Users\\eskle\\source\\repos\\fitnessCenter.web\\fitnessCenter.web\\Views\\TrainerAvailabilities\\Edit.cshtml",
               "RelativeToolTip": "fitnessCenter.web\\Views\\TrainerAvailabilities\\Edit.cshtml",
-              "ViewState": "AgIAACsAAAAAAAAAAAAiwDsAAAAGAAAAAAAAAA==",
+              "ViewState": "AgIAACsAAAAAAAAAAAAiwEIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-12-01T17:46:46.87Z",
               "EditorCaption": ""
@@ -103,8 +103,7 @@
               "RelativeToolTip": "fitnessCenter.web\\Views\\TrainerAvailabilities\\Create.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-01T17:46:44.888Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T17:46:44.888Z"
             },
             {
               "$type": "Document",
@@ -116,8 +115,7 @@
               "RelativeToolTip": "fitnessCenter.web\\Controllers\\TrainerAvailabilitiesController.cs",
               "ViewState": "AgIAAEIAAAAAAAAAAAAowFYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T17:45:53.168Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T17:45:53.168Z"
             },
             {
               "$type": "Document",
@@ -129,8 +127,7 @@
               "RelativeToolTip": "fitnessCenter.web\\Controllers\\AppointmentsController.cs",
               "ViewState": "AgIAAIIAAAAAAAAAAAAUwIwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T15:31:45.911Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T15:31:45.911Z"
             },
             {
               "$type": "Document",
@@ -142,8 +139,7 @@
               "RelativeToolTip": "fitnessCenter.web\\Data\\ApplicationDbContext.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T14:00:49.011Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T14:00:49.011Z"
             },
             {
               "$type": "Document",
@@ -155,8 +151,7 @@
               "RelativeToolTip": "fitnessCenter.web\\Controllers\\TrainersController.cs",
               "ViewState": "AgIAADQAAAAAAAAAAAAkwAoAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T15:34:01.964Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T15:34:01.964Z"
             },
             {
               "$type": "Document",
@@ -168,8 +163,7 @@
               "RelativeToolTip": "fitnessCenter.web\\Views\\_ViewImports.cshtml",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-01T16:14:26.272Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T16:14:26.272Z"
             },
             {
               "$type": "Document",
@@ -181,8 +175,7 @@
               "RelativeToolTip": "fitnessCenter.web\\Views\\Trainers\\Create.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-01T16:21:41.795Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T16:21:41.795Z"
             },
             {
               "$type": "Document",
@@ -194,8 +187,7 @@
               "RelativeToolTip": "fitnessCenter.web\\Controllers\\ServicesController.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABYAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T15:27:56.421Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T15:27:56.421Z"
             },
             {
               "$type": "Document",
@@ -207,8 +199,7 @@
               "RelativeToolTip": "fitnessCenter.web\\Controllers\\FitnessCentersController.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAABMAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T14:41:51.819Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T14:41:51.819Z"
             },
             {
               "$type": "Document",
@@ -220,8 +211,7 @@
               "RelativeToolTip": "fitnessCenter.web\\Migrations\\20251201143457_InitialCreate.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T14:34:57.611Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T14:34:57.611Z"
             },
             {
               "$type": "Document",
@@ -233,8 +223,7 @@
               "RelativeToolTip": "fitnessCenter.web\\Models\\Service.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T14:24:30.576Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T14:24:30.576Z"
             },
             {
               "$type": "Document",
@@ -246,8 +235,7 @@
               "RelativeToolTip": "fitnessCenter.web\\Models\\FitnessCenter.cs",
               "ViewState": "AgIAAAUAAAAAAAAAAAAcwAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T14:11:54.399Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T14:11:54.399Z"
             },
             {
               "$type": "Document",
@@ -259,21 +247,19 @@
               "RelativeToolTip": "fitnessCenter.web\\Program.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAAA0AAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T14:04:20.426Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T14:04:20.426Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 13,
-              "Title": "fitnessCenter.web",
+              "Title": "fitnessCenter.web.csproj",
               "DocumentMoniker": "C:\\Users\\eskle\\source\\repos\\fitnessCenter.web\\fitnessCenter.web\\fitnessCenter.web.csproj",
               "RelativeDocumentMoniker": "fitnessCenter.web\\fitnessCenter.web.csproj",
               "ToolTip": "C:\\Users\\eskle\\source\\repos\\fitnessCenter.web\\fitnessCenter.web\\fitnessCenter.web.csproj",
               "RelativeToolTip": "fitnessCenter.web\\fitnessCenter.web.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-12-01T13:59:11.063Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T13:59:11.063Z"
             },
             {
               "$type": "Document",
@@ -285,8 +271,11 @@
               "RelativeToolTip": "fitnessCenter.web\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-12-01T13:57:43.327Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T13:57:43.327Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
             }
           ]
         }
