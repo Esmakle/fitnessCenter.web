@@ -22,10 +22,43 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+
+                        <!-- Fitness Center -->
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-controller="FitnessCenters" asp-action="Index">Fitness Centers</a>
+                        </li>
+
+                        <!-- Trainers -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Trainers" asp-action="Index">Trainers</a>
+                        </li>
+
+                        <!-- Services -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Services" asp-action="Index">Services</a>
+                        </li>
+
+                        <!-- Trainer Service (Uzmanlık / ilişkiler) -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="TrainerServices" asp-action="Index">Trainer Services</a>
+                        </li>
+
+                        <!-- Trainer Availability -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="TrainerAvailabilities" asp-action="Index">Müsaitlik</a>
+                        </li>
+
+                        <!-- Members -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Members" asp-action="Index">Üyeler</a>
+                        </li>
+
+                        <!-- Appointments (randevu sistemi) → birazdan yapacağız -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Appointments" asp-action="Index">Randevular</a>
                         </li>
                     </ul>
+
                 </div>
             </div>
         </nav>

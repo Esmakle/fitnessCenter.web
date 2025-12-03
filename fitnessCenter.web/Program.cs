@@ -1,8 +1,9 @@
-
 using fitnessCenter.web.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 // appsettings.json içindeki ConnectionStrings:DefaultConnection'ý okuyoruz
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -10,7 +11,21 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// Add services to the container.
+// ?? Identity servisleri
+builder.Services
+    .AddDefaultIdentity<IdentityUser>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false;
+
+        // Ýstersen þifre kurallarýný yumuþatmak için burayý açabilirsin:
+        // options.Password.RequireNonAlphanumeric = false;
+        // options.Password.RequireUppercase = false;
+        // options.Password.RequireDigit = false;
+    })
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+// MVC
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -28,10 +43,16 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// ?? Önce Authentication, sonra Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
+// MVC için klasik route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Attribute route kullanan API controller'lar için
+app.MapControllers();
 
 app.Run();

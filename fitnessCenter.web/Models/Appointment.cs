@@ -25,6 +25,8 @@ namespace fitnessCenter.web.Models
         public DateTime EndTime { get; set; }
 
         [Display(Name = "Durum")]
+        [Required]
+        [StringLength(20)]
         public string Status { get; set; } = "Pending";
 
         [ValidateNever]

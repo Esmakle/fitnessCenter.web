@@ -59,31 +59,27 @@ namespace fitnessCenter.web.Controllers
         }
 
         // POST: Appointments/Create
-        // POST: Appointments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MemberId,TrainerId,ServiceId,StartTime,EndTime,Status")] Appointment appointment)
+        public async Task<IActionResult> Create(
+            [Bind("Id,MemberId,TrainerId,ServiceId,StartTime,EndTime,Status")]
+            Appointment appointment)
         {
-            // Önce temel model doğrulaması
-            if (!ModelState.IsValid)
-            {
-                ViewData["MemberId"] = new SelectList(_context.Members, "Id", "AdSoyad", appointment.MemberId);
-                ViewData["TrainerId"] = new SelectList(_context.Trainers, "Id", "AdSoyad", appointment.TrainerId);
-                ViewData["ServiceId"] = new SelectList(_context.Services, "Id", "Ad", appointment.ServiceId);
-                return View(appointment);
-            }
+            // Status boş gelirse Pending yap
+            appointment.Status ??= "Pending";
 
-            // 1) Tarih mantıklı mı? (Bitiş > Başlangıç)
+            // 1) Bitiş > Başlangıç kontrolü
             if (appointment.EndTime <= appointment.StartTime)
             {
-                ModelState.AddModelError("", "Bitiş zamanı, başlangıç zamanından sonra olmalıdır.");
+                ModelState.AddModelError(string.Empty,
+                    "Bitiş zamanı, başlangıç zamanından sonra olmalıdır.");
             }
 
-            // Tarihleri UTC olarak işaretleyelim (PostgreSQL hatası için)
+            // 2) Tarihleri UTC olarak işaretle
             var startUtc = DateTime.SpecifyKind(appointment.StartTime, DateTimeKind.Utc);
             var endUtc = DateTime.SpecifyKind(appointment.EndTime, DateTimeKind.Utc);
 
-            // 2) Eğitmenin o gün çalışma saati içinde mi?
+            // 3) Eğitmenin o gün çalışma saatleri içinde mi?
             var day = startUtc.DayOfWeek;
             var startT = TimeOnly.FromDateTime(startUtc);
             var endT = TimeOnly.FromDateTime(endUtc);
@@ -97,22 +93,24 @@ namespace fitnessCenter.web.Controllers
 
             if (!fitsAvailability)
             {
-                ModelState.AddModelError("", "Seçilen eğitmen bu gün ve saat aralığında çalışmıyor.");
+                ModelState.AddModelError(string.Empty,
+                    "Seçilen eğitmen bu gün ve saat aralığında çalışmıyor.");
             }
 
-            // 3) Eğitmenin aynı saatte başka randevusu var mı? (Çakışma kontrolü)
+            // 4) Eğitmenin aynı saatte başka randevusu var mı? (çakışma)
             bool hasOverlap = await _context.Appointments
                 .AnyAsync(a =>
                     a.TrainerId == appointment.TrainerId &&
-                    a.StartTime < endUtc &&      // mevcut randevu bitmeden önce başlıyor
-                    a.EndTime > startUtc);     // ve mevcut randevu başladıktan sonra bitiyor
+                    a.StartTime < endUtc &&
+                    a.EndTime > startUtc);
 
             if (hasOverlap)
             {
-                ModelState.AddModelError("", "Bu eğitmenin aynı zaman aralığında başka bir randevusu var.");
+                ModelState.AddModelError(string.Empty,
+                    "Bu eğitmenin aynı zaman aralığında başka bir randevusu var.");
             }
 
-            // Eğer yukarıdaki kontroller ModelState'e hata eklediyse, formu tekrar göster
+            // DataAnnotations + yukarıdaki kontroller
             if (!ModelState.IsValid)
             {
                 ViewData["MemberId"] = new SelectList(_context.Members, "Id", "AdSoyad", appointment.MemberId);
@@ -129,56 +127,105 @@ namespace fitnessCenter.web.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        // GET: TrainerAvailabilities/Edit/5
+
+        // GET: Appointments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
                 return NotFound();
 
-            var trainerAvailability = await _context.TrainerAvailabilities.FindAsync(id);
-            if (trainerAvailability == null)
+            var appointment = await _context.Appointments.FindAsync(id);
+            if (appointment == null)
                 return NotFound();
 
-            ViewData["TrainerId"] =
-                new SelectList(_context.Trainers, "Id", "AdSoyad", trainerAvailability.TrainerId);
+            ViewData["MemberId"] = new SelectList(_context.Members, "Id", "AdSoyad", appointment.MemberId);
+            ViewData["TrainerId"] = new SelectList(_context.Trainers, "Id", "AdSoyad", appointment.TrainerId);
+            ViewData["ServiceId"] = new SelectList(_context.Services, "Id", "Ad", appointment.ServiceId);
 
-            return View(trainerAvailability);
+            return View(appointment);
         }
 
-        // POST: TrainerAvailabilities/Edit/5
+        // POST: Appointments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TrainerId,DayOfWeek,StartTime,EndTime")] TrainerAvailability trainerAvailability)
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("Id,MemberId,TrainerId,ServiceId,StartTime,EndTime,Status")]
+            Appointment appointment)
         {
-            if (id != trainerAvailability.Id)
+            if (id != appointment.Id)
                 return NotFound();
 
-            if (ModelState.IsValid)
+            // 1) Bitiş > Başlangıç kontrolü
+            if (appointment.EndTime <= appointment.StartTime)
             {
-                try
-                {
-                    _context.Update(trainerAvailability);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_context.TrainerAvailabilities.Any(e => e.Id == trainerAvailability.Id))
-                        return NotFound();
-                    else
-                        throw;
-                }
-
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError(string.Empty,
+                    "Bitiş zamanı, başlangıç zamanından sonra olmalıdır.");
             }
 
-            // ModelState geçersizse dropdown’ı tekrar doldur
-            ViewData["TrainerId"] =
-                new SelectList(_context.Trainers, "Id", "AdSoyad", trainerAvailability.TrainerId);
+            // 2) Tarihleri UTC olarak işaretle
+            var startUtc = DateTime.SpecifyKind(appointment.StartTime, DateTimeKind.Utc);
+            var endUtc = DateTime.SpecifyKind(appointment.EndTime, DateTimeKind.Utc);
 
-            return View(trainerAvailability);
+            // 3) Eğitmenin o gün çalışma saatleri içinde mi?
+            var day = startUtc.DayOfWeek;
+            var st = TimeOnly.FromDateTime(startUtc);
+            var et = TimeOnly.FromDateTime(endUtc);
+
+            var availabilities = await _context.TrainerAvailabilities
+                .Where(a => a.TrainerId == appointment.TrainerId && a.DayOfWeek == day)
+                .ToListAsync();
+
+            bool fitsAvailability = availabilities.Any(a =>
+                a.StartTime <= st && a.EndTime >= et);
+
+            if (!fitsAvailability)
+            {
+                ModelState.AddModelError(string.Empty,
+                    "Seçilen eğitmen bu gün ve saat aralığında çalışmıyor.");
+            }
+
+            // 4) Çakışma kontrolü (bu randevu hariç)
+            bool hasOverlap = await _context.Appointments
+                .AnyAsync(a =>
+                    a.Id != appointment.Id &&
+                    a.TrainerId == appointment.TrainerId &&
+                    a.StartTime < endUtc &&
+                    a.EndTime > startUtc);
+
+            if (hasOverlap)
+            {
+                ModelState.AddModelError(string.Empty,
+                    "Bu eğitmenin aynı zaman aralığında başka bir randevusu var.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["MemberId"] = new SelectList(_context.Members, "Id", "AdSoyad", appointment.MemberId);
+                ViewData["TrainerId"] = new SelectList(_context.Trainers, "Id", "AdSoyad", appointment.TrainerId);
+                ViewData["ServiceId"] = new SelectList(_context.Services, "Id", "Ad", appointment.ServiceId);
+                return View(appointment);
+            }
+
+            // Zaman değerlerini normalize edip güncelle
+            appointment.StartTime = startUtc;
+            appointment.EndTime = endUtc;
+
+            try
+            {
+                _context.Update(appointment);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AppointmentExists(appointment.Id))
+                    return NotFound();
+                else
+                    throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
-
-
 
         // GET: Appointments/Delete/5
         public async Task<IActionResult> Delete(int? id)

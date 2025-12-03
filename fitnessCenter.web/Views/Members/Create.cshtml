@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Üye Oluştur</h1>
 
 <h4>Member</h4>
 <hr />
@@ -12,21 +12,61 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="AdSoyad" class="control-label"></label>
                 <input asp-for="AdSoyad" class="form-control" />
                 <span asp-validation-for="AdSoyad" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Telefon" class="control-label"></label>
                 <input asp-for="Telefon" class="form-control" />
                 <span asp-validation-for="Telefon" class="text-danger"></span>
             </div>
+
+            <!-- Doğum Tarihi -->
+            <div class="form-group">
+                <label asp-for="DogumTarihi" class="control-label"></label>
+                <input asp-for="DogumTarihi" class="form-control" type="date" />
+                <span asp-validation-for="DogumTarihi" class="text-danger"></span>
+            </div>
+
+            <!-- Cinsiyet -->
+            <div class="form-group">
+                <label asp-for="Cinsiyet" class="control-label"></label>
+                <select asp-for="Cinsiyet" class="form-control">
+                    <option value="">-- Seçiniz --</option>
+                    <option value="Kadın">Kadın</option>
+                    <option value="Erkek">Erkek</option>
+                    <option value="Belirtmek istemiyorum">Belirtmek istemiyorum</option>
+                </select>
+                <span asp-validation-for="Cinsiyet" class="text-danger"></span>
+            </div>
+
+            <!-- Kayıt Tarihi (otomatik) -->
+            <div class="form-group">
+                <label class="control-label">Kayıt Tarihi</label>
+
+                <!-- Kullanıcıya sadece gösteriyoruz -->
+                <input class="form-control"
+                       value="@(Model.KayitTarihi.ToString("dd.MM.yyyy"))"
+                       readonly />
+
+                <!-- Asıl değeri post eden gizli input -->
+                <input type="hidden" asp-for="KayitTarihi" />
+
+                <small class="form-text text-muted">Kayıt tarihi otomatik atanır.</small>
+            </div>
+
+
+            <!-- Fitness Center -->
             <div class="form-group">
                 <label asp-for="FitnessCenterId" class="control-label"></label>
                 <select asp-for="FitnessCenterId"
@@ -36,7 +76,8 @@
                 </select>
                 <span asp-validation-for="FitnessCenterId" class="text-danger"></span>
             </div>
-            <div class="form-group">
+
+            <div class="form-group mt-3">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -48,5 +89,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
