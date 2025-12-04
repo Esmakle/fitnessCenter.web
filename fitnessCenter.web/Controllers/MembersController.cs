@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fitnessCenter.web.Data;
 using fitnessCenter.web.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fitnessCenter.web.Controllers
 {
+    [Authorize]
+
     public class MembersController : Controller
     {
         private readonly ApplicationDbContext _context;

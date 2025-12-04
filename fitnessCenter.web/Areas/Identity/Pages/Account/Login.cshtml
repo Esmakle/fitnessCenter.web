@@ -1,0 +1,95 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+
+            <div class="row">
+                <!-- SOL TARAF: admin GİRİŞİ -->
+                <div class="col-md-6 border-end">
+                    <h2 class="text-center mb-4">Admin Girişi</h2>
+
+                    <form id="trainer-login" method="post">
+                        <input type="hidden" name="loginType" value="trainer" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+                            <label asp-for="Input.Email" class="form-label"></label>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
+                            <label asp-for="Input.Password" class="form-label"></label>
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="checkbox mb-3">
+                            <label asp-for="Input.RememberMe" class="form-label">
+                                <input class="form-check-input" asp-for="Input.RememberMe" />
+                                @Html.DisplayNameFor(m => m.Input.RememberMe)
+                            </label>
+                        </div>
+
+                        <button id="trainer-login-submit" type="submit" class="w-100 btn btn-lg btn-primary">
+                            Trainer Olarak Giriş Yap
+                        </button>
+
+                        <div class="mt-3 text-center">
+                            <a id="forgot-password" asp-page="./ForgotPassword">Şifremi Unuttum</a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- SAĞ TARAF: ÜYE GİRİŞİ -->
+                <div class="col-md-6">
+                    <h2 class="text-center mb-4">Üye Girişi</h2>
+
+                    <form id="member-login" method="post">
+                        <input type="hidden" name="loginType" value="member" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+                            <label asp-for="Input.Email" class="form-label"></label>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
+                            <label asp-for="Input.Password" class="form-label"></label>
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="checkbox mb-3">
+                            <label asp-for="Input.RememberMe" class="form-label">
+                                <input class="form-check-input" asp-for="Input.RememberMe" />
+                                @Html.DisplayNameFor(m => m.Input.RememberMe)
+                            </label>
+                        </div>
+
+                        <button id="member-login-submit" type="submit" class="w-100 btn btn-lg btn-success">
+                            Üye Olarak Giriş Yap
+                        </button>
+
+                        <div class="mt-3 text-center">
+                            <a asp-page="./Register">Hesabın yok mu? Üye Ol</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fitnessCenter.web.Data;
 using fitnessCenter.web.Models;
+using Microsoft.AspNetCore.Authorization;   // <<< EKLENDİ
 
 namespace fitnessCenter.web.Controllers
 {
+    // Bu controller'a sadece giriş yapmış kullanıcılar erişebilir
+    [Authorize]
     public class AppointmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -65,21 +68,17 @@ namespace fitnessCenter.web.Controllers
             [Bind("Id,MemberId,TrainerId,ServiceId,StartTime,EndTime,Status")]
             Appointment appointment)
         {
-            // Status boş gelirse Pending yap
             appointment.Status ??= "Pending";
 
-            // 1) Bitiş > Başlangıç kontrolü
             if (appointment.EndTime <= appointment.StartTime)
             {
                 ModelState.AddModelError(string.Empty,
                     "Bitiş zamanı, başlangıç zamanından sonra olmalıdır.");
             }
 
-            // 2) Tarihleri UTC olarak işaretle
             var startUtc = DateTime.SpecifyKind(appointment.StartTime, DateTimeKind.Utc);
             var endUtc = DateTime.SpecifyKind(appointment.EndTime, DateTimeKind.Utc);
 
-            // 3) Eğitmenin o gün çalışma saatleri içinde mi?
             var day = startUtc.DayOfWeek;
             var startT = TimeOnly.FromDateTime(startUtc);
             var endT = TimeOnly.FromDateTime(endUtc);
@@ -97,7 +96,6 @@ namespace fitnessCenter.web.Controllers
                     "Seçilen eğitmen bu gün ve saat aralığında çalışmıyor.");
             }
 
-            // 4) Eğitmenin aynı saatte başka randevusu var mı? (çakışma)
             bool hasOverlap = await _context.Appointments
                 .AnyAsync(a =>
                     a.TrainerId == appointment.TrainerId &&
@@ -110,7 +108,6 @@ namespace fitnessCenter.web.Controllers
                     "Bu eğitmenin aynı zaman aralığında başka bir randevusu var.");
             }
 
-            // DataAnnotations + yukarıdaki kontroller
             if (!ModelState.IsValid)
             {
                 ViewData["MemberId"] = new SelectList(_context.Members, "Id", "AdSoyad", appointment.MemberId);
@@ -119,7 +116,6 @@ namespace fitnessCenter.web.Controllers
                 return View(appointment);
             }
 
-            // Her şey yolundaysa kaydı ekle
             appointment.StartTime = startUtc;
             appointment.EndTime = endUtc;
 
@@ -156,18 +152,15 @@ namespace fitnessCenter.web.Controllers
             if (id != appointment.Id)
                 return NotFound();
 
-            // 1) Bitiş > Başlangıç kontrolü
             if (appointment.EndTime <= appointment.StartTime)
             {
                 ModelState.AddModelError(string.Empty,
                     "Bitiş zamanı, başlangıç zamanından sonra olmalıdır.");
             }
 
-            // 2) Tarihleri UTC olarak işaretle
             var startUtc = DateTime.SpecifyKind(appointment.StartTime, DateTimeKind.Utc);
             var endUtc = DateTime.SpecifyKind(appointment.EndTime, DateTimeKind.Utc);
 
-            // 3) Eğitmenin o gün çalışma saatleri içinde mi?
             var day = startUtc.DayOfWeek;
             var st = TimeOnly.FromDateTime(startUtc);
             var et = TimeOnly.FromDateTime(endUtc);
@@ -185,7 +178,6 @@ namespace fitnessCenter.web.Controllers
                     "Seçilen eğitmen bu gün ve saat aralığında çalışmıyor.");
             }
 
-            // 4) Çakışma kontrolü (bu randevu hariç)
             bool hasOverlap = await _context.Appointments
                 .AnyAsync(a =>
                     a.Id != appointment.Id &&
@@ -207,7 +199,6 @@ namespace fitnessCenter.web.Controllers
                 return View(appointment);
             }
 
-            // Zaman değerlerini normalize edip güncelle
             appointment.StartTime = startUtc;
             appointment.EndTime = endUtc;
 

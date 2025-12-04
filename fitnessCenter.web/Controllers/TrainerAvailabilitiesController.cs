@@ -85,7 +85,6 @@ namespace fitnessCenter.web.Controllers
             return View(trainerAvailability);
         }
 
-
         // POST: TrainerAvailabilities/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -103,18 +102,21 @@ namespace fitnessCenter.web.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TrainerAvailabilityExists(trainerAvailability.Id))
+                    if (!_context.TrainerAvailabilities.Any(e => e.Id == trainerAvailability.Id))
                         return NotFound();
                     else
                         throw;
                 }
+
                 return RedirectToAction(nameof(Index));
             }
 
             ViewData["TrainerId"] =
                 new SelectList(_context.Trainers, "Id", "AdSoyad", trainerAvailability.TrainerId);
+
             return View(trainerAvailability);
         }
+
 
         // GET: TrainerAvailabilities/Delete/5
         public async Task<IActionResult> Delete(int? id)

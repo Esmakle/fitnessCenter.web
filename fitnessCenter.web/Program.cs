@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// appsettings.json içindeki ConnectionStrings:DefaultConnection'ý okuyoruz
+// appsettings.json iï¿½indeki ConnectionStrings:DefaultConnection'ï¿½ okuyoruz
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // ApplicationDbContext'i PostgreSQL ile kaydediyoruz
@@ -17,7 +17,7 @@ builder.Services
     {
         options.SignIn.RequireConfirmedAccount = false;
 
-        // Ýstersen þifre kurallarýný yumuþatmak için burayý açabilirsin:
+        // ï¿½stersen ï¿½ifre kurallarï¿½nï¿½ yumuï¿½atmak iï¿½in burayï¿½ aï¿½abilirsin:
         // options.Password.RequireNonAlphanumeric = false;
         // options.Password.RequireUppercase = false;
         // options.Password.RequireDigit = false;
@@ -27,7 +27,7 @@ builder.Services
 
 // MVC
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddRazorPages();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -43,16 +43,16 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// ?? Önce Authentication, sonra Authorization
+// ?? ï¿½nce Authentication, sonra Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
-// MVC için klasik route
+// MVC iï¿½in klasik route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Attribute route kullanan API controller'lar için
+// Attribute route kullanan API controller'lar iï¿½in
 app.MapControllers();
-
+app.MapRazorPages();
 app.Run();

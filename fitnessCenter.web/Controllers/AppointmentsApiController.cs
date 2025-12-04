@@ -4,11 +4,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using fitnessCenter.web.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fitnessCenter.web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class AppointmentsApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
