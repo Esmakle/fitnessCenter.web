@@ -3,46 +3,192 @@
 <form asp-action="Create">
     <div asp-validation-summary="All" class="text-danger"></div>
 
-    <div class="form-group">
-        <label asp-for="MemberId" class="control-label"></label>
-        <select asp-for="MemberId" class="form-control"
-                asp-items="ViewBag.MemberId">
-            <option value="">-- Üye Seçin --</option>
-        </select>
-        <span asp-validation-for="MemberId" class="text-danger"></span>
-    </div>
+    <!-- MEMBER DROPDOWN: SADECE TRAINER GÖRSÜN, MEMBER GİRİŞ YAPINCA GİZLENİR -->
+    @if (User.IsInRole("Trainer"))
+    {
+        <div class="form-group">
+            <label asp-for="MemberId" class="control-label"></label>
+            <select asp-for="MemberId" class="form-control"
+                    asp-items="ViewBag.MemberId">
+                <option value="">-- Üye Seçin --</option>
+            </select>
+            <span asp-validation-for="MemberId" class="text-danger"></span>
+        </div>
+    }
+    else
+    {
+        <!-- MEMBER GİRİŞ YAPTIYSA DROPDOWN GİZLENİR -->
+        <input type="hidden" asp-for="MemberId" />
+    }
 
-    <div class="form-group">
-        <label asp-for="TrainerId" class="control-label"></label>
-        <select asp-for="TrainerId" class="form-control"
-                asp-items="ViewBag.TrainerId">
-            <option value="">-- Eğitmen Seçin --</option>
-        </select>
-        <span asp-validation-for="TrainerId" class="text-danger"></span>
-    </div>
-
+    <!-- HİZMET -->
     <div class="form-group">
         <label asp-for="ServiceId" class="control-label"></label>
-        <select asp-for="ServiceId" class="form-control"
+        <select asp-for="ServiceId" id="ServiceId" class="form-control"
                 asp-items="ViewBag.ServiceId">
             <option value="">-- Hizmet Seçin --</option>
         </select>
         <span asp-validation-for="ServiceId" class="text-danger"></span>
     </div>
 
+    <!-- EĞİTMEN / TRAINER -->
+    <div class="form-group">
+        <label asp-for="TrainerId" class="control-label"></label>
+        <select asp-for="TrainerId" id="TrainerId" class="form-control"
+                asp-items="ViewBag.TrainerId">
+            <option value="">-- Eğitmen Seçin --</option>
+        </select>
+        <span asp-validation-for="TrainerId" class="text-danger"></span>
+    </div>
+
+    <!-- TARİH SEÇİMİ -->
+    <div class="form-group">
+        <label class="control-label">Tarih</label>
+        <input type="date" id="SelectedDate" class="form-control" />
+    </div>
+
+    <!-- MÜSAİT SAATLER -->
+    <div class="form-group">
+        <label class="control-label">Müsait Saatler</label>
+        <select id="TimeSlot" class="form-control">
+            <option value="">Önce hizmet, eğitmen ve tarih seçiniz</option>
+        </select>
+    </div>
+
+    <!-- STARTTIME / ENDTIME (OTOMATİK DOLACAK) -->
     <div class="form-group">
         <label asp-for="StartTime" class="control-label"></label>
-        <input asp-for="StartTime" class="form-control" />
+        <input asp-for="StartTime" id="StartTime" class="form-control" />
         <span asp-validation-for="StartTime" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="EndTime" class="control-label"></label>
-        <input asp-for="EndTime" class="form-control" />
+        <input asp-for="EndTime" id="EndTime" class="form-control" />
         <span asp-validation-for="EndTime" class="text-danger"></span>
     </div>
 
-   
-
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">Randevu Oluştur</button>
 </form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const serviceSelect = document.getElementById("ServiceId");
+            const trainerSelect = document.getElementById("TrainerId");
+            const dateInput = document.getElementById("SelectedDate");
+            const timeSlotSelect = document.getElementById("TimeSlot");
+
+            const startTimeInput = document.getElementById("StartTime");
+            const endTimeInput = document.getElementById("EndTime");
+
+            /* --------------------------
+               1) HİZMET → EĞİTMEN FİLTRELEME
+            --------------------------- */
+            if (serviceSelect && trainerSelect) {
+
+                serviceSelect.addEventListener("change", function () {
+                    const serviceId = this.value;
+
+                    if (!serviceId) {
+                        trainerSelect.innerHTML = "<option value=''>Eğitmen seçiniz</option>";
+                        return;
+                    }
+
+                    fetch(`/Appointments/GetTrainersByService?serviceId=${serviceId}`)
+                        .then(r => r.json())
+                        .then(data => {
+                            trainerSelect.innerHTML = "";
+
+                            if (data.length === 0) {
+                                trainerSelect.innerHTML =
+                                    "<option value=''>Bu hizmeti veren eğitmen yok</option>";
+                                return;
+                            }
+
+                            const defaultOpt = document.createElement("option");
+                            defaultOpt.value = "";
+                            defaultOpt.textContent = "Eğitmen seçiniz";
+                            trainerSelect.appendChild(defaultOpt);
+
+                            data.forEach(t => {
+                                const opt = document.createElement("option");
+                                opt.value = t.id;
+                                opt.textContent = t.name;
+                                trainerSelect.appendChild(opt);
+                            });
+                        });
+                });
+            }
+
+            /* ---------------------------------------
+               2) HİZMET + EĞİTMEN + TARİH → SLOT YÜKLE
+            ---------------------------------------- */
+            function loadSlots() {
+                const serviceId = serviceSelect?.value;
+                const trainerId = trainerSelect?.value;
+                const dateVal = dateInput?.value;
+
+                if (!serviceId || !trainerId || !dateVal) {
+                    timeSlotSelect.innerHTML =
+                        "<option value=''>Önce hizmet, eğitmen ve tarih seçiniz</option>";
+                    return;
+                }
+
+                const url = `/Appointments/GetAvailableSlots?trainerId=${trainerId}&serviceId=${serviceId}&date=${dateVal}`;
+
+                fetch(url)
+                    .then(r => r.json())
+                    .then(data => {
+
+                        timeSlotSelect.innerHTML = "";
+
+                        if (!data.slots || data.slots.length === 0) {
+                            timeSlotSelect.innerHTML =
+                                "<option value=''>Bu gün için müsait saat yok</option>";
+                            return;
+                        }
+
+                        const defaultOpt = document.createElement("option");
+                        defaultOpt.value = "";
+                        defaultOpt.textContent = "Saat seçiniz";
+                        timeSlotSelect.appendChild(defaultOpt);
+
+                        data.slots.forEach(s => {
+                            const opt = document.createElement("option");
+                            opt.value = s.start + "|" + s.end;
+                            opt.textContent = s.text;
+                            timeSlotSelect.appendChild(opt);
+                        });
+                    });
+            }
+
+            serviceSelect.addEventListener("change", loadSlots);
+            trainerSelect.addEventListener("change", loadSlots);
+            dateInput.addEventListener("change", loadSlots);
+
+            /* ---------------------------------------
+               3) SEÇİLEN SLOT → START / END DOLDUR
+            ---------------------------------------- */
+            timeSlotSelect.addEventListener("change", function () {
+                const val = this.value;
+
+                if (!val || val.indexOf("|") === -1)
+                    return;
+
+                const parts = val.split("|");
+                const start = parts[0];
+                const end = parts[1];
+
+                // datetime-local formatına uygun hale getir
+                startTimeInput.value = start.substring(0, 16);
+                endTimeInput.value = end.substring(0, 16);
+            });
+
+        });
+    </script>
+}

@@ -12,53 +12,107 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">fitnessCenter.web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    fitnessCenter.web
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">
+                                Ana Sayfa
+                            </a>
                         </li>
 
-                        <!-- Trainers -->
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Trainers" asp-action="Index">Trainers</a>
-                        </li>
-
-                        <!-- Services -->
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Services" asp-action="Index">Services</a>
-                        </li>
-
-                        <!-- Trainer Service (Uzmanlık / ilişkiler) -->
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="TrainerServices" asp-action="Index">Trainer Services</a>
-                        </li>
-
-                        <!-- Trainer Availability -->
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="TrainerAvailabilities" asp-action="Index">Müsaitlik</a>
-                        </li>
-
-                        <!-- Members -->
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Members" asp-action="Index">Üyeler</a>
-                        </li>
-
-                        <!-- Appointments (randevu sistemi) → birazdan yapacağız -->
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Appointments" asp-action="Index">Randevular</a>
-                        </li>
+                        @*  ADMIN / TRAINER MENÜSÜ *@
+                        @if (User.IsInRole("Trainer"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Services" asp-action="Index">
+                                    Hizmetler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Trainers" asp-action="Index">
+                                    Eğitmenler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="TrainerServices" asp-action="Index">
+                                    Eğitmen-Hizmet
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="TrainerAvailabilities" asp-action="Index">
+                                    Müsaitlik
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Members" asp-action="Index">
+                                    Üyeler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Appointments" asp-action="Index">
+                                    Tüm Randevular
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Appointments" asp-action="MyAppointments">
+                                    Randevularım
+                                </a>
+                            </li>
+                        }
+                        @*  GİRİŞ YAPMIŞ AMA TRAINER OLMAYAN = MEMBER DAVRANIŞI *@
+                        else if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Services" asp-action="Index">
+                                    Hizmetler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Appointments" asp-action="Create">
+                                    Randevu Al
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Appointments" asp-action="MyAppointments">
+                                    Randevularım
+                                </a>
+                            </li>
+                        }
+                        @* MİSAFİR *@
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">
+                                    Merkez Hakkında
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">
+                                    Giriş
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">
+                                    Kayıt Ol
+                                </a>
+                            </li>
+                        }
                     </ul>
+
                     <partial name="_LoginPartial" />
-
-
                 </div>
             </div>
         </nav>
+
+
     </header>
     <div class="container">
         <main role="main" class="pb-3">

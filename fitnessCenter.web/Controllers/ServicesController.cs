@@ -2,18 +2,12 @@
 using fitnessCenter.web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 
 namespace fitnessCenter.web.Controllers
 {
-    [Authorize]
-
     public class ServicesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,13 +17,20 @@ namespace fitnessCenter.web.Controllers
             _context = context;
         }
 
+        // ==========================
+        //   HERKES GÖREBİLİR
+        // ==========================
+
         // GET: Services
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Services.ToListAsync());
+            var services = await _context.Services.ToListAsync();
+            return View(services);
         }
 
         // GET: Services/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -39,6 +40,7 @@ namespace fitnessCenter.web.Controllers
 
             var service = await _context.Services
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (service == null)
             {
                 return NotFound();
@@ -47,29 +49,35 @@ namespace fitnessCenter.web.Controllers
             return View(service);
         }
 
+        // ==========================
+        //   SADECE TRAINER (ADMIN)
+        // ==========================
+
         // GET: Services/Create
+        [Authorize(Roles = "Trainer")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Services/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Trainer")]
         public async Task<IActionResult> Create([Bind("Id,Ad,SureDakika,Ucret")] Service service)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(service);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(service);
             }
-            return View(service);
+
+            _context.Add(service);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Services/Edit/5
+        [Authorize(Roles = "Trainer")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -82,14 +90,14 @@ namespace fitnessCenter.web.Controllers
             {
                 return NotFound();
             }
+
             return View(service);
         }
 
         // POST: Services/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Trainer")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Ad,SureDakika,Ucret")] Service service)
         {
             if (id != service.Id)
@@ -97,30 +105,33 @@ namespace fitnessCenter.web.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(service);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ServiceExists(service.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(service);
             }
-            return View(service);
+
+            try
+            {
+                _context.Update(service);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ServiceExists(service.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Services/Delete/5
+        [Authorize(Roles = "Trainer")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,6 +141,7 @@ namespace fitnessCenter.web.Controllers
 
             var service = await _context.Services
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (service == null)
             {
                 return NotFound();
@@ -141,15 +153,16 @@ namespace fitnessCenter.web.Controllers
         // POST: Services/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Trainer")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var service = await _context.Services.FindAsync(id);
             if (service != null)
             {
                 _context.Services.Remove(service);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

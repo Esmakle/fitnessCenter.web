@@ -1,12 +1,10 @@
-using System.Diagnostics;
+ï»¿using System.Diagnostics;
 using fitnessCenter.web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
 namespace fitnessCenter.web.Controllers
 {
-    // Bu controller'daki tüm action'lar giriþ yapmadan da görülebilsin
-    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -16,18 +14,21 @@ namespace fitnessCenter.web.Controllers
             _logger = logger;
         }
 
-        // Merkez hakkýnda / ana sayfa
+        // Herkese aÃ§Ä±k: giriÅŸ ekranÄ± / merkez tanÄ±tÄ±m sayfasÄ±
+        [AllowAnonymous]
         public IActionResult Index()
         {
+            // Sadece tanÄ±tÄ±m / landing sayfasÄ±
             return View();
         }
 
-        // Ýstersen burayý "Hakkýmýzda / KVKK / Gizlilik" gibi kullanýrsýn
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

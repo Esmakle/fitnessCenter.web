@@ -11,7 +11,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace fitnessCenter.web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Trainer")]
+  
 
     public class TrainersController : Controller
     {

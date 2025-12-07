@@ -1,36 +1,37 @@
 ﻿@model fitnessCenter.web.Models.Service
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Hizmet Detayı";
+    var isTrainer = User.IsInRole("Trainer");
 }
 
-<h1>Details</h1>
+<h1>Hizmet Detayı</h1>
 
 <div>
-    <h4>Service</h4>
+    <h4>@Model.Ad</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ad)
+        <dt class="col-sm-2">
+            Süre (Dakika)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ad)
+        <dd class="col-sm-10">
+            @Model.SureDakika
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SureDakika)
+        <dt class="col-sm-2">
+            Ücret
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SureDakika)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ucret)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ucret)
+        <dd class="col-sm-10">
+            @Model.Ucret
         </dd>
     </dl>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @if (isTrainer)
+    {
+        <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.Id">Düzenle</a>
+        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Id">Sil</a>
+    }
+
+    <a class="btn btn-link" asp-action="Index">Listeye dön</a>
 </div>

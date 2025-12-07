@@ -4,20 +4,20 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// appsettings.json i�indeki ConnectionStrings:DefaultConnection'� okuyoruz
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Connection string
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-// ApplicationDbContext'i PostgreSQL ile kaydediyoruz
+// DbContext (PostgreSQL)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// ?? Identity servisleri
+// Identity + Roles
 builder.Services
     .AddDefaultIdentity<IdentityUser>(options =>
     {
         options.SignIn.RequireConfirmedAccount = false;
-
-        // �stersen �ifre kurallar�n� yumu�atmak i�in buray� a�abilirsin:
+        // Şifre kurallarını yumuşatmak istersen:
         // options.Password.RequireNonAlphanumeric = false;
         // options.Password.RequireUppercase = false;
         // options.Password.RequireDigit = false;
@@ -25,16 +25,62 @@ builder.Services
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// MVC
+// MVC + Razor Pages (Identity UI için gerekli)
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// =======================
+//   ROL + İLK TRAINER SEED
+// =======================
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+
+    // Sadece Trainer rolü gerekli
+    string[] roles = new[] { "Trainer" };
+
+    foreach (var role in roles)
+    {
+        var roleExists = await roleManager.RoleExistsAsync(role);
+        if (!roleExists)
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+
+    // İlk TRAINER kullanıcısı
+    string trainerEmail = "kolesmanurr@gmail.com";   // admin hesabın
+    string trainerPassword = "Esmanur123.";          // ilk giriş için şifre
+
+    var trainerUser = await userManager.FindByEmailAsync(trainerEmail);
+    if (trainerUser == null)
+    {
+        trainerUser = new IdentityUser
+        {
+            UserName = trainerEmail,
+            Email = trainerEmail,
+            EmailConfirmed = true
+        };
+
+        var result = await userManager.CreateAsync(trainerUser, trainerPassword);
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(trainerUser, "Trainer");
+        }
+    }
+}
+
+// =======================
+//    HTTP PIPELINE
+// =======================
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -43,16 +89,15 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// ?? �nce Authentication, sonra Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
-// MVC i�in klasik route
+// MVC route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Attribute route kullanan API controller'lar i�in
-app.MapControllers();
+// Identity Razor Pages (Login / Register)
 app.MapRazorPages();
+
 app.Run();

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fitnessCenter.web.Data;
 using fitnessCenter.web.Models;
-using Microsoft.AspNetCore.Authorization;   // <<< EKLENDİ
+using Microsoft.AspNetCore.Authorization;
 
 namespace fitnessCenter.web.Controllers
 {
@@ -31,6 +31,37 @@ namespace fitnessCenter.web.Controllers
                 .Include(a => a.Trainer);
 
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        // SADECE ÜYE İÇİN: Kendi randevularım
+        [Authorize]
+        public async Task<IActionResult> MyAppointments()
+        {
+            var userEmail = User.Identity?.Name;
+
+            if (string.IsNullOrEmpty(userEmail))
+                return Challenge();
+
+            // Sistemde bu mail ile kayıtlı Member'ı bul
+            var member = await _context.Members
+                .FirstOrDefaultAsync(m => m.Email == userEmail);
+
+            if (member == null)
+            {
+                TempData["Error"] = "Sistemde bu e-posta ile kayıtlı bir üye bulunamadı.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Sadece bu üyeye ait randevuları al
+            var myAppointments = await _context.Appointments
+                .Include(a => a.Member)
+                .Include(a => a.Service)
+                .Include(a => a.Trainer)
+                .Where(a => a.MemberId == member.Id)
+                .OrderByDescending(a => a.StartTime)
+                .ToListAsync();
+
+            return View("Index", myAppointments);
         }
 
         // GET: Appointments/Details/5
@@ -68,6 +99,25 @@ namespace fitnessCenter.web.Controllers
             [Bind("Id,MemberId,TrainerId,ServiceId,StartTime,EndTime,Status")]
             Appointment appointment)
         {
+         
+            // Eğer TRAINER değilse, onu normal üye kabul edip MemberId'yi mail üzerinden bağla
+            if (!User.IsInRole("Trainer"))
+            {
+                var userEmail = User.Identity?.Name;
+
+                if (!string.IsNullOrEmpty(userEmail))
+                {
+                    var member = await _context.Members
+                        .FirstOrDefaultAsync(m => m.Email == userEmail);
+
+                    if (member != null)
+                    {
+                        appointment.MemberId = member.Id;
+                    }
+                }
+            }
+
+
             appointment.Status ??= "Pending";
 
             if (appointment.EndTime <= appointment.StartTime)
