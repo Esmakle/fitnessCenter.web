@@ -41,39 +41,47 @@ using (var scope = app.Services.CreateScope())
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
 
-    // Sadece Trainer rolü gerekli
-    string[] roles = new[] { "Trainer" };
+    // Sadece Admin rolü gerekli
+    string[] roles = new[] { "Admin" };
 
     foreach (var role in roles)
     {
-        var roleExists = await roleManager.RoleExistsAsync(role);
-        if (!roleExists)
+        if (!await roleManager.RoleExistsAsync(role))
         {
             await roleManager.CreateAsync(new IdentityRole(role));
         }
     }
 
-    // İlk TRAINER kullanıcısı
-    string trainerEmail = "kolesmanurr@gmail.com";   // admin hesabın
-    string trainerPassword = "Esmanur123.";          // ilk giriş için şifre
+    // İlk ADMIN kullanıcısı
+    string adminEmail = "kolesmanurr@gmail.com";
+    string adminPassword = "Esmanur123.";
 
-    var trainerUser = await userManager.FindByEmailAsync(trainerEmail);
-    if (trainerUser == null)
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
     {
-        trainerUser = new IdentityUser
+        adminUser = new IdentityUser
         {
-            UserName = trainerEmail,
-            Email = trainerEmail,
+            UserName = adminEmail,
+            Email = adminEmail,
             EmailConfirmed = true
         };
 
-        var result = await userManager.CreateAsync(trainerUser, trainerPassword);
+        var result = await userManager.CreateAsync(adminUser, adminPassword);
         if (result.Succeeded)
         {
-            await userManager.AddToRoleAsync(trainerUser, "Trainer");
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
+    else
+    {
+        // Kullanıcı zaten varsa bile Admin rolünde olduğundan emin ol
+        if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
         }
     }
 }
+
 
 // =======================
 //    HTTP PIPELINE

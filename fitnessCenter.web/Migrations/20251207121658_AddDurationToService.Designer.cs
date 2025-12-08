@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using fitnessCenter.web.Data;
@@ -11,9 +12,11 @@ using fitnessCenter.web.Data;
 namespace fitnessCenter.web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251207121658_AddDurationToService")]
+    partial class AddDurationToService
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -334,10 +337,6 @@ namespace fitnessCenter.web.Migrations
                     b.Property<int>("FitnessCenterId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("IdentityUserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateOnly>("KayitTarihi")
                         .HasColumnType("date");
 
@@ -347,8 +346,6 @@ namespace fitnessCenter.web.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FitnessCenterId");
-
-                    b.HasIndex("IdentityUserId");
 
                     b.ToTable("Members");
                 });
@@ -567,15 +564,7 @@ namespace fitnessCenter.web.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
-                        .WithMany()
-                        .HasForeignKey("IdentityUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("FitnessCenter");
-
-                    b.Navigation("IdentityUser");
                 });
 
             modelBuilder.Entity("fitnessCenter.web.Models.Service", b =>

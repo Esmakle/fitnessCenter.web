@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace fitnessCenter.web.Models
 {
@@ -7,22 +8,22 @@ namespace fitnessCenter.web.Models
     {
         public int Id { get; set; }
 
-        [Display(Name = "Eğitmen")]
+        [Required]
         public int TrainerId { get; set; }
-         
-        [Display(Name = "Gün")]
-        public DayOfWeek DayOfWeek { get; set; }   // Pazartesi, Salı vs.
 
-        [Display(Name = "Başlangıç Saati")]
+        public DayOfWeek DayOfWeek { get; set; }
+
         [DataType(DataType.Time)]
         public TimeOnly StartTime { get; set; }
 
-        [Display(Name = "Bitiş Saati")]
         [DataType(DataType.Time)]
         public TimeOnly EndTime { get; set; }
 
-
         [ValidateNever]
         public Trainer Trainer { get; set; } = null!;
+
+        // CHECKBOX gün seçimi için
+        [NotMapped]
+        public List<DayOfWeek> SelectedDays { get; set; } = new();
     }
 }

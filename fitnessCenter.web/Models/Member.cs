@@ -32,6 +32,10 @@ namespace fitnessCenter.web.Models
         [Required(ErrorMessage = "Bir salon seçilmelidir.")]
         public int FitnessCenterId { get; set; }
 
+        // ASP.NET Identity ile ilişki
+        // NULL olabilir: her Member'in mutlaka Identity hesabı olmak zorunda değil
+        public string? IdentityUserId { get; set; }
+
         // --- Navigation Properties ---
         [ValidateNever]
         public virtual FitnessCenter FitnessCenter { get; set; } = null!;

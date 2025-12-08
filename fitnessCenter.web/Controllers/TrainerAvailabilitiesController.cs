@@ -11,8 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace fitnessCenter.web.Controllers
 {
-    [Authorize(Roles = "Trainer")]
-   
+    [Authorize(Roles = "Admin")]
     public class TrainerAvailabilitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -49,28 +48,53 @@ namespace fitnessCenter.web.Controllers
         // GET: TrainerAvailabilities/Create
         public IActionResult Create()
         {
-            // Dropdown'da eğitmen adı görünsün
-            ViewData["TrainerId"] =
-                new SelectList(_context.Trainers, "Id", "AdSoyad");
+            ViewBag.TrainerId = new SelectList(_context.Trainers, "Id", "AdSoyad");
+
+            var days = Enum.GetValues(typeof(DayOfWeek))
+                           .Cast<DayOfWeek>()
+                           .ToList();
+
+            ViewBag.Days = days;
+
             return View();
         }
 
         // POST: TrainerAvailabilities/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TrainerId,DayOfWeek,StartTime,EndTime")] TrainerAvailability trainerAvailability)
+        public async Task<IActionResult> Create(TrainerAvailability model)
         {
+            if (model.SelectedDays == null || !model.SelectedDays.Any())
+            {
+                ModelState.AddModelError("SelectedDays", "En az bir gün seçmelisiniz.");
+            }
+
             if (ModelState.IsValid)
             {
-                _context.Add(trainerAvailability);
+                foreach (var day in model.SelectedDays)
+                {
+                    var entity = new TrainerAvailability
+                    {
+                        TrainerId = model.TrainerId,
+                        DayOfWeek = day,
+                        StartTime = model.StartTime,
+                        EndTime = model.EndTime
+                    };
+
+                    _context.TrainerAvailabilities.Add(entity);
+                }
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["TrainerId"] =
-                new SelectList(_context.Trainers, "Id", "AdSoyad", trainerAvailability.TrainerId);
-            return View(trainerAvailability);
+            // Form yeniden açılırsa dropdown tekrar dolsun
+            ViewBag.TrainerId = new SelectList(_context.Trainers, "Id", "AdSoyad", model.TrainerId);
+            ViewBag.Days = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>().ToList();
+
+            return View(model);
         }
+
 
         // GET: TrainerAvailabilities/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -119,7 +143,6 @@ namespace fitnessCenter.web.Controllers
 
             return View(trainerAvailability);
         }
-
 
         // GET: TrainerAvailabilities/Delete/5
         public async Task<IActionResult> Delete(int? id)

@@ -1,62 +1,57 @@
 ﻿@model fitnessCenter.web.Models.TrainerAvailability
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Availability";
 }
 
-<h1>Create</h1>
-
-<h4>TrainerAvailability</h4>
+<h2>Çalışma Günleri ve Saatleri Ekle</h2>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="All" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="TrainerId" class="control-label"></label>
-                <select asp-for="TrainerId"
-                        class="form-control"
-                        asp-items="ViewBag.TrainerId">
-                    <option value="">-- Eğitmen Seçin --</option>
-                </select>
-                <span asp-validation-for="TrainerId" class="text-danger"></span>
-            </div>
+<form asp-action="Create">
+    <div asp-validation-summary="All" class="text-danger"></div>
 
-            <!-- GÜN -->
-            <div class="form-group">
-                <label asp-for="DayOfWeek" class="control-label"></label>
-                <select asp-for="DayOfWeek"
-                        class="form-control"
-                        asp-items="Html.GetEnumSelectList<System.DayOfWeek>()">
-                    <option value="">-- Gün Seçin --</option>
-                </select>
-                <span asp-validation-for="DayOfWeek" class="text-danger"></span>
-            </div>
-
-            <!-- SAATLER -->
-            <div class="form-group">
-                <label asp-for="StartTime" class="control-label"></label>
-                <input asp-for="StartTime" type="time" class="form-control" />
-                <span asp-validation-for="StartTime" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="EndTime" class="control-label"></label>
-                <input asp-for="EndTime" type="time" class="form-control" />
-                <span asp-validation-for="EndTime" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <!-- EĞİTMEN -->
+    <div class="form-group mb-3">
+        <label asp-for="TrainerId"></label>
+        <select asp-for="TrainerId" class="form-control" asp-items="ViewBag.TrainerId">
+            <option value="">-- Eğitmen Seçin --</option>
+        </select>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <!-- CHECKBOX GÜNLER -->
+    <div class="form-group mb-3">
+        <label>Gün Seçin</label>
+        <div class="border rounded p-2">
+
+            @foreach (DayOfWeek day in ViewBag.Days)
+            {
+                <div class="form-check">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           name="SelectedDays"
+                           value="@day" />
+
+                    <label class="form-check-label">@day</label>
+                </div>
+            }
+
+        </div>
+        <span asp-validation-for="SelectedDays" class="text-danger"></span>
+    </div>
+
+    <!-- SAATLER -->
+    <div class="form-group mb-3">
+        <label asp-for="StartTime"></label>
+        <input asp-for="StartTime" type="time" class="form-control" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="EndTime"></label>
+        <input asp-for="EndTime" type="time" class="form-control" />
+    </div>
+
+    <button class="btn btn-primary">Kaydet</button>
+</form>
 
 @section Scripts {
     @{

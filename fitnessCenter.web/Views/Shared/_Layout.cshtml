@@ -29,7 +29,7 @@
                         </li>
 
                         @*  ADMIN / TRAINER MENÜSÜ *@
-                        @if (User.IsInRole("Trainer"))
+                        @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Services" asp-action="Index">
@@ -61,11 +61,7 @@
                                     Tüm Randevular
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Appointments" asp-action="MyAppointments">
-                                    Randevularım
-                                </a>
-                            </li>
+                          
                         }
                         @*  GİRİŞ YAPMIŞ AMA TRAINER OLMAYAN = MEMBER DAVRANIŞI *@
                         else if (User.Identity != null && User.Identity.IsAuthenticated)

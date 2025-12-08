@@ -176,6 +176,26 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhaW5lckF2YWlsYWJpbGl0aWVzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/eskle/source/repos/fitnessCenter.web/fitnessCenter.web/Views/TrainerServices/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhaW5lclNlcnZpY2VzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/eskle/source/repos/fitnessCenter.web/fitnessCenter.web/Views/TrainerServices/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhaW5lclNlcnZpY2VzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/eskle/source/repos/fitnessCenter.web/fitnessCenter.web/Views/TrainerServices/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhaW5lclNlcnZpY2VzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/eskle/source/repos/fitnessCenter.web/fitnessCenter.web/Views/TrainerServices/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhaW5lclNlcnZpY2VzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/eskle/source/repos/fitnessCenter.web/fitnessCenter.web/Views/TrainerServices/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhaW5lclNlcnZpY2VzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/eskle/source/repos/fitnessCenter.web/fitnessCenter.web/Views/Trainers/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhaW5lcnNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

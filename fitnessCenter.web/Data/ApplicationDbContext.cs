@@ -19,5 +19,7 @@ namespace fitnessCenter.web.Data
         public DbSet<Trainer> Trainers { get; set; } = null!;
         public DbSet<Appointment> Appointments { get; set; } = null!;
         public DbSet<TrainerAvailability> TrainerAvailabilities { get; set; } = null!;
+        public DbSet<TrainerService> TrainerServices { get; set; }
+
     }
 }

@@ -54,7 +54,7 @@ namespace fitnessCenter.web.Controllers
         // ==========================
 
         // GET: Services/Create
-        [Authorize(Roles = "Trainer")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -63,7 +63,7 @@ namespace fitnessCenter.web.Controllers
         // POST: Services/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Trainer")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,Ad,SureDakika,Ucret")] Service service)
         {
             if (!ModelState.IsValid)
@@ -77,7 +77,7 @@ namespace fitnessCenter.web.Controllers
         }
 
         // GET: Services/Edit/5
-        [Authorize(Roles = "Trainer")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -97,7 +97,7 @@ namespace fitnessCenter.web.Controllers
         // POST: Services/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Trainer")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Ad,SureDakika,Ucret")] Service service)
         {
             if (id != service.Id)
@@ -131,7 +131,7 @@ namespace fitnessCenter.web.Controllers
         }
 
         // GET: Services/Delete/5
-        [Authorize(Roles = "Trainer")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -153,7 +153,7 @@ namespace fitnessCenter.web.Controllers
         // POST: Services/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Trainer")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var service = await _context.Services.FindAsync(id);

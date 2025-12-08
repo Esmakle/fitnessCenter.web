@@ -25,5 +25,8 @@ namespace fitnessCenter.web.Models
 
         [ValidateNever]
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+
+        public ICollection<TrainerService> TrainerServices { get; set; }
+      = new List<TrainerService>();
     }
 }
