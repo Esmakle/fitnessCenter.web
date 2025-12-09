@@ -90,8 +90,7 @@
               "RelativeToolTip": "fitnessCenter.web\\Views\\Appointments\\Create.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-08T10:43:43.057Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-08T10:43:43.057Z"
             },
             {
               "$type": "Document",
@@ -103,8 +102,7 @@
               "RelativeToolTip": "fitnessCenter.web\\Models\\Member.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-07T13:07:53.75Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-07T13:07:53.75Z"
             },
             {
               "$type": "Document",
@@ -114,7 +112,7 @@
               "RelativeDocumentMoniker": "fitnessCenter.web\\Controllers\\AppointmentsController.cs",
               "ToolTip": "C:\\Users\\eskle\\source\\repos\\fitnessCenter.web\\fitnessCenter.web\\Controllers\\AppointmentsController.cs",
               "RelativeToolTip": "fitnessCenter.web\\Controllers\\AppointmentsController.cs",
-              "ViewState": "AgIAAGQBAAAAAAAAAAAAwHsBAAAVAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAH4BAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-03T18:54:35.54Z",
               "EditorCaption": ""
