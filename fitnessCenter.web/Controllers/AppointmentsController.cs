@@ -1,12 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using fitnessCenter.web.Data;
+using fitnessCenter.web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using fitnessCenter.web.Data;
-using fitnessCenter.web.Models;
+using System;
 using System.Globalization;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+
 namespace fitnessCenter.web.Controllers
 {
     public class AppointmentsController : Controller
@@ -78,9 +80,30 @@ namespace fitnessCenter.web.Controllers
         // ---------------------------------------------------------
         // GET: Appointments/Create
         // ---------------------------------------------------------
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.MemberId = new SelectList(_context.Members, "Id", "AdSoyad");
+            // Member ise: kendi bilgisini bul
+            if (User.IsInRole("Member"))
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized();
+
+                var member = await _context.Members
+                    .FirstOrDefaultAsync(m => m.IdentityUserId == userId);
+
+                if (member == null)
+                    return Unauthorized();
+
+                ViewBag.CurrentMemberId = member.Id;
+                ViewBag.CurrentMemberName = member.AdSoyad;
+            }
+            else
+            {
+                // Admin vb. ise, tüm üyelerin listesini görsün
+                ViewBag.MemberList = new SelectList(_context.Members, "Id", "AdSoyad");
+            }
+
             ViewBag.ServiceId = new SelectList(_context.Services, "Id", "Ad");
             ViewBag.TrainerId = new SelectList(_context.Trainers, "Id", "AdSoyad");
 
@@ -94,18 +117,41 @@ namespace fitnessCenter.web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Appointment model)
         {
-            // 0) Tarihleri UTC olarak işaretle
+            // Member ise, formdan gelen MemberId'yi YOK SAY, kendisi için ata
+            if (User.IsInRole("Member"))
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized();
+
+                var member = await _context.Members
+                    .FirstOrDefaultAsync(m => m.IdentityUserId == userId);
+
+                if (member == null)
+                    return Unauthorized();
+
+                model.MemberId = member.Id;
+
+                // Eğer MemberId için Required attribute varsa, eski değeri temizle
+                ModelState.Remove("MemberId");
+            }
+
+            // Saat seçilmemişse daha anlamlı bir hata verelim
+            if (model.StartTime == default || model.EndTime == default)
+            {
+                ModelState.AddModelError("StartTime", "Lütfen tarih ve saat seçiniz.");
+            }
+
+            // Buradan sonra senin mevcut kodun (UTC'ye çevirme, eğitmen uygun mu, çakışma kontrolü vs.)
             var startUtc = DateTime.SpecifyKind(model.StartTime, DateTimeKind.Utc);
             var endUtc = DateTime.SpecifyKind(model.EndTime, DateTimeKind.Utc);
 
-            // 1) Başlangıç < Bitiş kontrolü
             if (endUtc <= startUtc)
             {
                 ModelState.AddModelError(string.Empty,
                     "Bitiş zamanı başlangıç zamanından sonra olmalıdır.");
             }
 
-            // 2) Eğitmen o gün çalışıyor mu?
             var day = startUtc.DayOfWeek;
             var start = TimeOnly.FromDateTime(startUtc);
             var end = TimeOnly.FromDateTime(endUtc);
@@ -122,7 +168,6 @@ namespace fitnessCenter.web.Controllers
                     "Eğitmen bu gün ve saat aralığında çalışmıyor.");
             }
 
-            // 3) Çakışan randevu var mı?
             bool hasConflict = await _context.Appointments.AnyAsync(a =>
                 a.TrainerId == model.TrainerId &&
                 a.Status != "Cancelled" &&
@@ -149,13 +194,31 @@ namespace fitnessCenter.web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // dropdown’ları yeniden yükle
-            ViewBag.MemberId = new SelectList(_context.Members, "Id", "AdSoyad", model.MemberId);
+            // dropdown’ları yeniden yükle (Admin / Member ayrımına göre)
+            if (User.IsInRole("Admin"))
+            {
+                ViewBag.MemberList = new SelectList(_context.Members, "Id", "AdSoyad", model.MemberId);
+            }
+            else
+            {
+                // Member için adını tekrar dolduralım
+                var userId2 = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var member2 = await _context.Members
+                    .FirstOrDefaultAsync(m => m.IdentityUserId == userId2);
+
+                if (member2 != null)
+                {
+                    ViewBag.CurrentMemberId = member2.Id;
+                    ViewBag.CurrentMemberName = member2.AdSoyad;
+                }
+            }
+
             ViewBag.ServiceId = new SelectList(_context.Services, "Id", "Ad", model.ServiceId);
             ViewBag.TrainerId = new SelectList(_context.Trainers, "Id", "AdSoyad", model.TrainerId);
 
             return View(model);
         }
+
 
         // ---------------------------------------------------------
         // GET: Appointments/Edit/5
@@ -292,64 +355,66 @@ namespace fitnessCenter.web.Controllers
         // ---------------------------------------------------------
         // GET: Appointments/GetAvailableSlots  (AJAX için)
         // ---------------------------------------------------------
-        // ---------------------------------------------------------
-        // GET: Appointments/GetAvailableSlots
-        // ---------------------------------------------------------
+
+
         [HttpGet]
-        public async Task<IActionResult> GetAvailableSlots(int trainerId, int serviceId, DateTime date)
+        // test için istersen şimdilik böyle yap:
+        // [AllowAnonymous]
+        public async Task<IActionResult> GetAvailableSlots(int trainerId, int serviceId, string date)
         {
-            if (trainerId == 0 || serviceId == 0 || date == default)
+            // Temel kontroller
+            if (trainerId == 0 || serviceId == 0 || string.IsNullOrWhiteSpace(date))
                 return Json(Array.Empty<string>());
 
-            // 🔹 PostgreSQL timestamptz sadece UTC kabul ettiği için
-            // gelen tarihi Utc olarak işaretliyoruz
-            date = DateTime.SpecifyKind(date, DateTimeKind.Utc);
+            // "2025-11-05" formatını parse et
+            if (!DateTime.TryParseExact(
+                    date,
+                    "yyyy-MM-dd",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out var dateValue))
+            {
+                return Json(Array.Empty<string>());
+            }
 
-            // 1) Hizmet süresi (dakika) -> seans süresi
+            // 1) Hizmet süresi
             var service = await _context.Services
-                .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.Id == serviceId);
 
             if (service == null)
                 return Json(Array.Empty<string>());
 
-            // Hizmette süre tanımlıysa onu kullan, yoksa varsayılan 90 dk
             var sessionMinutes = service.DurationMinutes > 0
                 ? service.DurationMinutes
                 : 90;
 
-            // Seanslar arası mola süresi (dakika)
             const int breakMinutes = 20;
 
-            // Global çalışma aralığı: 06:00 - 23:00
             var globalStart = new TimeOnly(6, 0);
             var globalEnd = new TimeOnly(23, 0);
 
-            // 2) Eğitmenin o güne ait çalışma aralıkları
-            var day = date.DayOfWeek;
+            // 2) Eğitmenin o güne ait çalışma saatleri
+            var day = dateValue.DayOfWeek;
 
             var availabilities = await _context.TrainerAvailabilities
-                .AsNoTracking()
                 .Where(a => a.TrainerId == trainerId && a.DayOfWeek == day)
                 .ToListAsync();
 
             if (!availabilities.Any())
                 return Json(Array.Empty<string>());
 
-            // 3) Eğitmenin o günkü randevuları
+            // 3) O günkü randevular
             var appointments = await _context.Appointments
-                .AsNoTracking()
                 .Where(a =>
                     a.TrainerId == trainerId &&
                     a.Status != "Cancelled" &&
-                    a.StartTime.Date == date.Date)
+                    a.StartTime.Date == dateValue.Date)
                 .ToListAsync();
 
             var slots = new List<string>();
 
             foreach (var av in availabilities)
             {
-                // Eğitmenin çalışma aralığını global çalışma saatleriyle kesiştir
                 var windowStart = av.StartTime < globalStart ? globalStart : av.StartTime;
                 var windowEnd = av.EndTime > globalEnd ? globalEnd : av.EndTime;
 
@@ -363,32 +428,28 @@ namespace fitnessCenter.web.Controllers
                     var slotStart = current;
                     var slotEnd = current.AddMinutes(sessionMinutes);
 
-                    // Tarihle saatleri birleştir
-                    var startLocal = date.Date + slotStart.ToTimeSpan();
-                    var endLocal = date.Date + slotEnd.ToTimeSpan();
+                    var startLocal = dateValue.Date + slotStart.ToTimeSpan();
+                    var endLocal = dateValue.Date + slotEnd.ToTimeSpan();
 
-                    // Bunları da Utc olarak işaretle (parametre olarak DB'ye gidecekler)
                     var startUtc = DateTime.SpecifyKind(startLocal, DateTimeKind.Utc);
                     var endUtc = DateTime.SpecifyKind(endLocal, DateTimeKind.Utc);
 
-                    // Çakışan randevu var mı?
                     bool conflict = appointments.Any(a =>
                         a.StartTime < endUtc &&
                         startUtc < a.EndTime);
 
                     if (!conflict)
                     {
-                        // Örn: "06:00-07:30"
                         slots.Add($"{slotStart:HH\\:mm}-{slotEnd:HH\\:mm}");
                     }
 
-                    // Bir sonraki seans: seans + mola
                     current = current.AddMinutes(sessionMinutes + breakMinutes);
                 }
             }
 
             return Json(slots);
         }
+
 
     }
 }
