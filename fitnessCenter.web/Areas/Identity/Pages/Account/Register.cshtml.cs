@@ -122,42 +122,32 @@ namespace fitnessCenter.web.Areas.Identity.Pages.Account
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
-
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    // -------------------------------
-                    //  BURASI YENİ EKLEDİĞİMİZ KISIM
-                    // -------------------------------
+                    var db = (ApplicationDbContext)HttpContext.RequestServices
+                        .GetService(typeof(ApplicationDbContext));
 
-                    // Member kaydı oluştur
+                    // 1️⃣ MEMBER PROFİLİ
                     var member = new Member
                     {
                         IdentityUserId = user.Id,
-                        AdSoyad = Input.Email.Split('@')[0], // İstersen form ile alırız
+                        AdSoyad = Input.Email.Split('@')[0],
                         Email = Input.Email,
                         KayitTarihi = DateOnly.FromDateTime(DateTime.Now),
-
-                        // Varsayılan fitness center (şimdilik 1)
-                        FitnessCenterId = 1
+                        FitnessCenterId = 1   // mutlaka dolu
                     };
 
-                    var db = (ApplicationDbContext)HttpContext.RequestServices.GetService(typeof(ApplicationDbContext));
                     db.Members.Add(member);
                     await db.SaveChangesAsync();
 
-                    // -------------------------------
+                    // 2️⃣ MEMBER ROLÜ ATA (EKSİK OLAN BU)
+                    await _userManager.AddToRoleAsync(user, "Member");
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    // 3️⃣ LOGIN
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
                 }
 
                 foreach (var error in result.Errors)

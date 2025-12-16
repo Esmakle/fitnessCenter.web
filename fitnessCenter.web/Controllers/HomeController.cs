@@ -37,5 +37,9 @@ namespace fitnessCenter.web.Controllers
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             });
         }
+        public IActionResult NeedMemberProfile()
+        {
+            return View();
+        }
     }
 }

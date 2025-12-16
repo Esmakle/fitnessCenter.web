@@ -10,14 +10,11 @@
 <form asp-action="Create" method="post">
     <div asp-validation-summary="All" class="text-danger"></div>
 
-    <!-- Üye: Member ise sadece kendi adı, Admin ise dropdown -->
     @if (User.IsInRole("Admin"))
     {
         <div class="mb-3">
             <label asp-for="MemberId" class="form-label"></label>
-            <select asp-for="MemberId"
-                    class="form-select"
-                    asp-items="ViewBag.MemberList">
+            <select asp-for="MemberId" class="form-select" asp-items="ViewBag.MemberList">
                 <option value="">-- Üye Seçin --</option>
             </select>
             <span asp-validation-for="MemberId" class="text-danger"></span>
@@ -27,14 +24,11 @@
     {
         <div class="mb-3">
             <label class="form-label">Üye</label>
-            <input class="form-control"
-                   value="@ViewBag.CurrentMemberName"
-                   disabled />
+            <input class="form-control" value="@ViewBag.CurrentMemberName" disabled />
         </div>
         <input type="hidden" asp-for="MemberId" value="@ViewBag.CurrentMemberId" />
     }
 
-    <!-- Hizmet -->
     <div class="mb-3">
         <label asp-for="ServiceId" class="form-label"></label>
         <select asp-for="ServiceId" class="form-select" asp-items="ViewBag.ServiceId" id="serviceSelect">
@@ -43,7 +37,6 @@
         <span asp-validation-for="ServiceId" class="text-danger"></span>
     </div>
 
-    <!-- Eğitmen -->
     <div class="mb-3">
         <label asp-for="TrainerId" class="form-label"></label>
         <select asp-for="TrainerId" class="form-select" asp-items="ViewBag.TrainerId" id="trainerSelect">
@@ -52,13 +45,11 @@
         <span asp-validation-for="TrainerId" class="text-danger"></span>
     </div>
 
-    <!-- Tarih -->
     <div class="mb-3">
         <label class="form-label">Tarih</label>
         <input id="dateInput" class="form-control" type="date" />
     </div>
 
-    <!-- Müsait Saatler -->
     <div class="mb-3">
         <label class="form-label">Müsait Saatler</label>
         <select id="slotSelect" class="form-select">
@@ -66,7 +57,6 @@
         </select>
     </div>
 
-    <!-- Model’e gidecek gerçek alanlar -->
     <input type="hidden" asp-for="StartTime" id="StartTime" />
     <input type="hidden" asp-for="EndTime" id="EndTime" />
 
@@ -88,58 +78,44 @@
             const startHidden = document.getElementById("StartTime");
             const endHidden = document.getElementById("EndTime");
 
-            // URL'i serverdan al (area vs. varsa otomatik düzgün olur)
-            const baseUrl = '@Url.Action("GetAvailableSlots", "Appointments")';
+            const baseUrl = '@Url.Action("GetAvailableSlots", "Appointments", new { area = "" })';
+
+            function setSlotMessage(msg) {
+                slotSelect.innerHTML = "";
+                const o = document.createElement("option");
+                o.value = "";
+                o.textContent = msg;
+                slotSelect.appendChild(o);
+            }
 
             async function loadSlots() {
-                slotSelect.innerHTML = "";
-                const option = document.createElement("option");
-                option.textContent = "Saatler yükleniyor...";
-                option.value = "";
-                slotSelect.appendChild(option);
+                setSlotMessage("Saatler yükleniyor...");
+                startHidden.value = "";
+                endHidden.value = "";
+
+                const trainerId = Number(trainerSelect.value);
+                const serviceId = Number(serviceSelect.value);
+                const dateVal = dateInput.value;
+
+                if (!trainerId || !serviceId || !dateVal) {
+                    setSlotMessage("Önce hizmet, eğitmen ve tarih seçiniz");
+                    return;
+                }
+
+                const url = `${baseUrl}?trainerId=${trainerId}&serviceId=${serviceId}&date=${encodeURIComponent(dateVal)}`;
 
                 try {
-                    const trainerId = parseInt(trainerSelect.value);
-                    const serviceId = parseInt(serviceSelect.value);
-                    const dateVal = dateInput.value; // yyyy-MM-dd
-
-                    if (!trainerId || !serviceId || !dateVal) {
-                        slotSelect.innerHTML = "";
-                        const o = document.createElement("option");
-                        o.textContent = "Önce hizmet, eğitmen ve tarih seçiniz";
-                        o.value = "";
-                        slotSelect.appendChild(o);
-                        startHidden.value = "";
-                        endHidden.value = "";
-                        return;
-                    }
-
-                    const url = `${baseUrl}?trainerId=${trainerId}&serviceId=${serviceId}&date=${encodeURIComponent(dateVal)}`;
-                    console.log("GetAvailableSlots URL:", url);
-
-                    const response = await fetch(url);
-
-                    console.log("Status:", response.status);
-
-                    if (!response.ok) {
-                        throw new Error("Sunucu hatası: " + response.status);
-                    }
+                    const response = await fetch(url, { headers: { "Accept": "application/json" } });
+                    if (!response.ok) throw new Error("HTTP " + response.status);
 
                     const slots = await response.json();
-                    console.log("Slots:", slots);
 
-                    slotSelect.innerHTML = "";
-
-                    if (!slots || slots.length === 0) {
-                        const noOpt = document.createElement("option");
-                        noOpt.value = "";
-                        noOpt.textContent = "Bu gün için müsait saat yok";
-                        slotSelect.appendChild(noOpt);
-                        startHidden.value = "";
-                        endHidden.value = "";
+                    if (!Array.isArray(slots) || slots.length === 0) {
+                        setSlotMessage("Bu gün için müsait saat yok");
                         return;
                     }
 
+                    slotSelect.innerHTML = "";
                     const def = document.createElement("option");
                     def.value = "";
                     def.textContent = "Saat seçiniz";
@@ -147,30 +123,19 @@
 
                     slots.forEach(s => {
                         const opt = document.createElement("option");
-                        opt.value = s;   // "08:00-09:30"
+                        opt.value = s;
                         opt.textContent = s;
                         slotSelect.appendChild(opt);
                     });
-
-                    // liste değişince gizli alanları temizle
-                    startHidden.value = "";
-                    endHidden.value = "";
                 } catch (err) {
-                    console.error("Slot yükleme hatası", err);
-                    slotSelect.innerHTML = "";
-                    const errOpt = document.createElement("option");
-                    errOpt.value = "";
-                    errOpt.textContent = "Saatler yüklenirken hata oluştu";
-                    slotSelect.appendChild(errOpt);
-                    startHidden.value = "";
-                    endHidden.value = "";
+                    console.error(err);
+                    setSlotMessage("Saatler yüklenirken hata oluştu");
                 }
             }
 
-            // slot seçilince StartTime / EndTime doldur
             slotSelect.addEventListener("change", () => {
-                const val = slotSelect.value;      // "HH:mm-HH:mm"
-                const dateVal = dateInput.value;   // "yyyy-MM-dd"
+                const val = slotSelect.value;
+                const dateVal = dateInput.value;
 
                 if (!val || !dateVal) {
                     startHidden.value = "";
@@ -185,11 +150,8 @@
                     return;
                 }
 
-                const startTimeStr = parts[0]; // "HH:mm"
-                const endTimeStr   = parts[1]; // "HH:mm"
-
-                startHidden.value = `${dateVal}T${startTimeStr}:00`;
-                endHidden.value   = `${dateVal}T${endTimeStr}:00`;
+                startHidden.value = `${dateVal}T${parts[0]}:00`;
+                endHidden.value   = `${dateVal}T${parts[1]}:00`;
             });
 
             serviceSelect.addEventListener("change", loadSlots);
