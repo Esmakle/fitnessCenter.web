@@ -12,10 +12,11 @@ using System;
 using System.Reflection;
 
 [assembly: Microsoft.AspNetCore.Identity.UI.UIFrameworkAttribute("Bootstrap5")]
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("78361981-26b7-4f81-845a-04e4829c73e4")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("fitnessCenter.web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f447a0f70e3b2c6771898140dd2db8e543ece736")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cf3105de1fa551632a37a1fd08575e9ff66fbe4c")]
 [assembly: System.Reflection.AssemblyProductAttribute("fitnessCenter.web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("fitnessCenter.web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

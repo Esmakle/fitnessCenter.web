@@ -1,0 +1,45 @@
+﻿@model fitnessCenter.web.Models.ViewModels.AiSuggestViewModel
+
+@{
+    ViewData["Title"] = "Randevu AI";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+
+        <h2 class="mb-3">Randevu AI</h2>
+        <p class="text-muted">
+            Hedefini yaz, sistem öneri üretsin. (Şimdilik demo cevap üretir.)
+        </p>
+
+        <form asp-action="Index" method="post" class="card p-4">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+            <div class="mb-3">
+                <label asp-for="Prompt" class="form-label"></label>
+                <textarea asp-for="Prompt" class="form-control" rows="4"
+                          placeholder="Örn: 1 ayda 3 kilo vermek istiyorum, haftada 3 gün gelebilirim."></textarea>
+                <span asp-validation-for="Prompt" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Öneri Al
+            </button>
+        </form>
+
+        @if (!string.IsNullOrWhiteSpace(Model?.Result))
+        {
+            <div class="card mt-4 p-4">
+                <h5 class="mb-2">Öneri</h5>
+                <pre style="white-space:pre-wrap; margin:0;">@Model.Result</pre>
+            </div>
+        }
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

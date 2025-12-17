@@ -37,6 +37,7 @@
                             <li class="nav-item"><a class="nav-link text-dark" asp-controller="TrainerAvailabilities" asp-action="Index">Müsaitlik</a></li>
                             <li class="nav-item"><a class="nav-link text-dark" asp-controller="Members" asp-action="Index">Üyeler</a></li>
                             <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Appointments" asp-action="Index">Tüm Randevular</a></li>
+                      
                         }
                         @* LOGIN OLAN HERKES (Admin olmayan = Member gibi) *@
                         else if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -44,6 +45,10 @@
                             <li class="nav-item"><a class="nav-link text-dark" asp-controller="Services" asp-action="Index">Hizmetler</a></li>
                             <li class="nav-item"><a class="nav-link text-dark" asp-controller="Appointments" asp-action="Create">Randevu Al</a></li>
                             <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Appointments" asp-action="Index">Randevularım</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="AI" asp-action="Index">Öneri Al</a>
+                            </li>
+
                         }
                         @* MİSAFİR *@
                         else

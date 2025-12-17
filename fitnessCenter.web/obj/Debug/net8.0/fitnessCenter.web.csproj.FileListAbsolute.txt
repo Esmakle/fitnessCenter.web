@@ -154,7 +154,6 @@ C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.Templating.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.Utils.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll
-C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\NuGet.Common.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\NuGet.Configuration.dll
@@ -166,11 +165,8 @@ C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\NuGet.Protocol.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\NuGet.Versioning.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
-C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\System.Drawing.Common.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\System.Reflection.MetadataLoadContext.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
-C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\System.Security.Permissions.dll
-C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\System.Windows.Extensions.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\af\Humanizer.resources.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\ar\Humanizer.resources.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\az\Humanizer.resources.dll
@@ -258,10 +254,6 @@ C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Scripting.resources.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Scripting.resources.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Scripting.resources.dll
-C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\runtimes\win\lib\net7.0\Microsoft.Win32.SystemEvents.dll
-C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Drawing.Common.dll
-C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Security.Cryptography.ProtectedData.dll
-C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Windows.Extensions.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\obj\Debug\net8.0\fitnessCenter.web.sourcelink.json
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
 C:\Users\eskle\source\repos\fitnessCenter.web\fitnessCenter.web\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
