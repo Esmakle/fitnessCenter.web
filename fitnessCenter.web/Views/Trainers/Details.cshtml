@@ -30,6 +30,15 @@
         </dd>
     </dl>
 </div>
+@if (User.Identity != null && User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
+{
+    <a class="btn btn-primary"
+       asp-controller="Appointments"
+       asp-action="Create"
+       asp-route-trainerId="@Model.Id">
+        Randevu Al
+    </a>
+}
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>

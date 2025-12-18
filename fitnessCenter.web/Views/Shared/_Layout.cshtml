@@ -1,83 +1,149 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - fitnessCenter.web</title>
+    <title>@ViewData["Title"] - FITNESS CENTER</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/fitnessCenter.web.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    fitnessCenter.web
+        <nav class="navbar navbar-expand-lg navbar-dark main-nav border-bottom border-dark shadow-lg mb-3">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span style="color: var(--primary-green)">FITNESS</span>CENTER
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
                         data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1 ms-lg-4">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">
-                                Ana Sayfa
+                            <a class="nav-link text-white" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-door me-1"></i> Ana Sayfa
                             </a>
                         </li>
 
-                        @* ADMIN *@
+                        @* --- ADMIN PANELİ --- *@
                         @if (User.IsInRole("Admin"))
                         {
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Services" asp-action="Index">Hizmetler</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Trainers" asp-action="Index">Eğitmenler</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="TrainerServices" asp-action="Index">Eğitmen-Hizmet</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="TrainerAvailabilities" asp-action="Index">Müsaitlik</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Members" asp-action="Index">Üyeler</a></li>
-                            <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Appointments" asp-action="Index">Tüm Randevular</a></li>
-                      
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-shield-lock me-1"></i> Yönetim
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark bg-card border-secondary" aria-labelledby="adminDropdown">
+                                    <li><a class="dropdown-item text-white" asp-controller="Members" asp-action="Index">Üyeler</a></li>
+                                    <li><a class="dropdown-item text-white" asp-controller="Appointments" asp-action="Index">Tüm Randevular</a></li>
+                                    <li><hr class="dropdown-divider border-secondary"></li>
+                                    <li><a class="dropdown-item text-white" asp-controller="Services" asp-action="Index">Hizmetler</a></li>
+                                    <li><a class="dropdown-item text-white" asp-controller="Trainers" asp-action="Index">Eğitmenler</a></li>
+                                    <li><a class="dropdown-item text-white" asp-controller="TrainerServices" asp-action="Index">Eğitmen-Hizmet</a></li>
+                                    <li><a class="dropdown-item text-white" asp-controller="TrainerAvailabilities" asp-action="Index">Müsaitlik Takvimi</a></li>
+                                </ul>
+                            </li>
                         }
-                        @* LOGIN OLAN HERKES (Admin olmayan = Member gibi) *@
+
+                        @* --- ÜYE / GİRİŞ YAPAN PANELİ --- *@
                         else if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Services" asp-action="Index">Hizmetler</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Appointments" asp-action="Create">Randevu Al</a></li>
-                            <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Appointments" asp-action="Index">Randevularım</a></li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="AI" asp-action="Index">Öneri Al</a>
+                                <a class="nav-link text-white" asp-controller="Services" asp-action="Index">
+                                    <i class="bi bi-gym me-1"></i> Hizmetler
+                                </a>
                             </li>
-
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Trainers" asp-action="Index">
+                                    <i class="bi bi-people me-1"></i> Eğitmenler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Appointments" asp-action="Create">
+                                    <i class="bi bi-calendar-plus me-1"></i> Randevu Al
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Appointments" asp-action="Index">
+                                    <i class="bi bi-list-check me-1"></i> Randevularım
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link ai-link ms-lg-2" asp-controller="AI" asp-action="Index">
+                                    <i class="bi bi-stars me-1"></i> AI Desteği
+                                </a>
+                            </li>
                         }
-                        @* MİSAFİR *@
+
+                        @* --- MİSAFİR PANELİ --- *@
                         else
                         {
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Merkez Hakkında</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Giriş</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Kayıt Ol</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Home" asp-action="Index">Hakkımızda</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Trainers" asp-action="Index">
+                                    <i class="bi bi-people me-1"></i> Eğitmenler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Login">Giriş Yap</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-success fw-bold" asp-area="Identity" asp-page="/Account/Register">Hemen Kaydol</a>
+                            </li>
                         }
                     </ul>
 
-                    <partial name="_LoginPartial" />
+                    <div class="d-flex align-items-center">
+                        @* LoginPartial içindeki linklerin de beyaz olması için CSS kontrolü gereklidir *@
+                        <partial name="_LoginPartial" />
+                    </div>
                 </div>
-
             </div>
         </nav>
-
-
     </header>
+
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-5 min-vh-100">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - fitnessCenter.web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="bg-black border-top border-dark py-5 mt-5">
+        <div class="container text-center text-md-start">
+            <div class="row text-white">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h5 class="fw-bold mb-3" style="color: var(--primary-green)">FITNESS CENTER</h5>
+                    <p class="text-muted small w-75">Geleceğin spor salonu deneyimi. Yapay zeka destekli antrenman planları ve profesyonel eğitmen kadrosuyla hedeflerinize bir adım daha yakınsınız.</p>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h6 class="fw-bold mb-3">Linkler</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="/Home" class="text-muted text-decoration-none hover-green">Ana Sayfa</a></li>
+                        <li><a href="/Services" class="text-muted text-decoration-none hover-green">Hizmetlerimiz</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-muted text-decoration-none hover-green">Gizlilik</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="fw-bold mb-3">Bizi Takip Edin</h6>
+                    <div class="d-flex gap-3 fs-5">
+                        <a href="#" class="text-muted hover-green"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-muted hover-green"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-muted hover-green"><i class="bi bi-twitter-x"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-top border-dark mt-4 pt-4 text-center text-muted small">
+                &copy; 2025 - fitnessCenter.web - Hendek, Sakarya
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

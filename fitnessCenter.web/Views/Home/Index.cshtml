@@ -1,8 +1,201 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Ana Sayfa";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero-wrap">
+    <div class="hero-bg"></div>
+    <div class="container py-5 position-relative">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <span class="badge hero-badge mb-3">
+                    <i class="bi bi-stars me-1"></i> AI destekli planlar • Profesyonel koçlar
+                </span>
+
+                <h1 class="hero-title">
+                    <span class="text-green">FITNESS</span>CENTER ile
+                    hedefe <span class="text-green">daha hızlı</span> git.
+                </h1>
+
+                <p class="hero-subtitle mt-3">
+                    Randevu al, hizmetleri keşfet, AI koçtan program önerisi al.
+                    Karanlık tema + yeşil vurgu = net, modern, performans odaklı.
+                </p>
+
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    @if (User?.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <a class="btn btn-primary btn-lg hero-btn" asp-controller="Appointments" asp-action="Create">
+                            <i class="bi bi-calendar-plus me-2"></i> Randevu Al
+                        </a>
+                        <a class="btn btn-outline-light btn-lg hero-btn" asp-controller="Services" asp-action="Index">
+                            <i class="bi bi-gym me-2"></i> Hizmetleri Gör
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-primary btn-lg hero-btn" asp-area="Identity" asp-page="/Account/Register">
+                            <i class="bi bi-person-plus me-2"></i> Hemen Kaydol
+                        </a>
+                        <a class="btn btn-outline-light btn-lg hero-btn" asp-area="Identity" asp-page="/Account/Login">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Giriş Yap
+                        </a>
+                    }
+                    <a class="btn btn-ai btn-lg hero-btn" asp-controller="AI" asp-action="Index">
+                        <i class="bi bi-stars me-2"></i> AI Koç
+                    </a>
+                </div>
+
+                <div class="hero-stats mt-5">
+                    <div class="stat">
+                        <div class="stat-num">24/7</div>
+                        <div class="stat-label">Online Takip</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-num">+50</div>
+                        <div class="stat-label">Antrenman Şablonu</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-num">3 dk</div>
+                        <div class="stat-label">Hızlı Plan</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="hero-card">
+                    <div class="hero-card-top">
+                        <div class="pulse-dot"></div>
+                        <span class="text-dim">Bugünün önerisi</span>
+                    </div>
+
+                    <div class="hero-card-body">
+                        <h5 class="mb-2">Yeşil Bölge Programı</h5>
+                        <p class="text-dim mb-4">
+                            Haftalık 3 gün: Full-body + kardiyo dengelemesi.
+                            Dinlenme günleri: yürüyüş + mobilite.
+                        </p>
+
+                        <div class="mini-list">
+                            <div class="mini-item">
+                                <i class="bi bi-check2-circle text-green me-2"></i>
+                                <span>Program kişiselleştirilir</span>
+                            </div>
+                            <div class="mini-item">
+                                <i class="bi bi-check2-circle text-green me-2"></i>
+                                <span>Randevu takvimi ile entegre</span>
+                            </div>
+                            <div class="mini-item">
+                                <i class="bi bi-check2-circle text-green me-2"></i>
+                                <span>İlerleme takibi mantığı</span>
+                            </div>
+                        </div>
+
+                        <a class="btn btn-primary w-100 mt-4" asp-controller="Services" asp-action="Index">
+                            <i class="bi bi-arrow-right-circle me-2"></i> Başla
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="section-head mb-4">
+        <h2 class="section-title">Öne Çıkanlar</h2>
+        <p class="section-subtitle">Sade ama “premium” bir akış: hızlı seçim, net randevu, akıllı öneri.</p>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="bi bi-calendar2-check"></i></div>
+                <h5>Randevu Yönetimi</h5>
+                <p class="text-dim mb-0">Üye girişine göre randevu al, saatleri gör, randevularını yönet.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                <h5>Hedef Odaklı</h5>
+                <p class="text-dim mb-0">Yağ yakımı / sıkılaşma / güç artışı gibi hedeflere göre plan mantığı.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="bi bi-stars"></i></div>
+                <h5>AI Koç</h5>
+                <p class="text-dim mb-0">Kısa prompt ile öneri al (servis yoğun olursa retry mantığı eklenir).</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container pb-5">
+    <div class="section-head mb-4">
+        <h2 class="section-title">Hizmetler</h2>
+        <p class="section-subtitle">Hızlı seçim için kart görünümü.</p>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="service-card">
+                <div class="service-top">
+                    <span class="service-badge">60 dk</span>
+                    <i class="bi bi-heart-pulse service-i"></i>
+                </div>
+                <h5>Vücut Geliştirme</h5>
+                <p class="text-dim">Kuvvet + hipertrofi odaklı program.</p>
+                <a class="stretched-link" asp-controller="Services" asp-action="Index"></a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="service-card">
+                <div class="service-top">
+                    <span class="service-badge">50 dk</span>
+                    <i class="bi bi-water service-i"></i>
+                </div>
+                <h5>Yüzme</h5>
+                <p class="text-dim">Düşük eklem stresi, yüksek verim.</p>
+                <a class="stretched-link" asp-controller="Services" asp-action="Index"></a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="service-card">
+                <div class="service-top">
+                    <span class="service-badge">45 dk</span>
+                    <i class="bi bi-universal-access service-i"></i>
+                </div>
+                <h5>Pilates / Mobilite</h5>
+                <p class="text-dim">Core + esneklik + postür.</p>
+                <a class="stretched-link" asp-controller="Services" asp-action="Index"></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container pb-5">
+    <div class="cta-strip">
+        <div class="cta-text">
+            <h3 class="mb-1">Hazır mısın?</h3>
+            <p class="text-dim mb-0">2 dakikada kayıt + randevu + başlangıç planı.</p>
+        </div>
+        <div class="cta-actions">
+            @if (User?.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <a class="btn btn-primary" asp-controller="Appointments" asp-action="Create">
+                    <i class="bi bi-calendar-plus me-2"></i> Randevu Al
+                </a>
+            }
+            else
+            {
+                <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register">
+                    <i class="bi bi-person-plus me-2"></i> Kaydol
+                </a>
+            }
+            <a class="btn btn-outline-light" asp-controller="Services" asp-action="Index">
+                <i class="bi bi-gym me-2"></i> Hizmetler
+            </a>
+        </div>
+    </div>
+</section>

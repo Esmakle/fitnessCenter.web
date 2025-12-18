@@ -4,39 +4,42 @@
     ViewData["Title"] = "Randevu AI";
 }
 
-<div class="row justify-content-center">
-    <div class="col-lg-8">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
 
-        <h2 class="mb-3">Randevu AI</h2>
-        <p class="text-muted">
-            Hedefini yaz, sistem öneri üretsin. (Şimdilik demo cevap üretir.)
-        </p>
+            <h2 class="display-5 mb-4 text-center">
+                <span style="color: var(--primary-green)">RANDEVU</span> AI
+            </h2>
 
-        <form asp-action="Index" method="post" class="card p-4">
-            @Html.AntiForgeryToken()
+            <form asp-action="Index" method="post" class="card p-4 ai-card">
+                <p class="text-muted small mb-2">
+                    Hedefinizi yazın, size özel yeşil bölge planınızı yapalım.
+                </p>
 
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+                <!-- ✅ YAZI YAZILACAK ALAN -->
+                <textarea asp-for="Prompt"
+                          class="form-control ai-input"
+                          rows="3"
+                          placeholder="Örn: Haftada 3 gün yağ yakımı + kas sıkılaşma, dizim hassas..."></textarea>
+                <span asp-validation-for="Prompt" class="text-danger small"></span>
 
-            <div class="mb-3">
-                <label asp-for="Prompt" class="form-label"></label>
-                <textarea asp-for="Prompt" class="form-control" rows="4"
-                          placeholder="Örn: 1 ayda 3 kilo vermek istiyorum, haftada 3 gün gelebilirim."></textarea>
-                <span asp-validation-for="Prompt" class="text-danger"></span>
-            </div>
+                <button type="submit" class="btn btn-primary w-100 mt-3">
+                    Analiz Et ve Öneri Al
+                </button>
+            </form>
 
-            <button type="submit" class="btn btn-primary">
-                Öneri Al
-            </button>
-        </form>
+            @if (!string.IsNullOrWhiteSpace(Model?.Result))
+            {
+                <div class="ai-result-container shadow-lg mt-4">
+                    <h4 class="mb-3" style="color: var(--primary-green)">AI Koç Önerisi</h4>
+                    <div class="ai-result-content">
+                        @Model.Result
+                    </div>
+                </div>
+            }
 
-        @if (!string.IsNullOrWhiteSpace(Model?.Result))
-        {
-            <div class="card mt-4 p-4">
-                <h5 class="mb-2">Öneri</h5>
-                <pre style="white-space:pre-wrap; margin:0;">@Model.Result</pre>
-            </div>
-        }
-
+        </div>
     </div>
 </div>
 

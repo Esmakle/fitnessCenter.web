@@ -1,47 +1,86 @@
 ﻿@model IEnumerable<fitnessCenter.web.Models.Trainer>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Eğitmen Kadromuz";
 }
 
-<h1>Index</h1>
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="display-4 fw-bold text-white">
+            <span style="color: var(--primary-green)">ELİT</span> EĞİTMENLER
+        </h2>
+        <p class="text-muted fs-5">Hedeflerinize giden yolda uzman rehberliğimizle tanışın.</p>
+        <div class="mx-auto" style="width: 80px; height: 4px; background: var(--primary-green); border-radius: 2px;"></div>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FitnessCenter)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AdSoyad)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UzmanlikNotu)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FitnessCenter.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AdSoyad)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UzmanlikNotu)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="mb-4 text-end">
+            <a asp-action="Create" class="btn btn-primary shadow-sm px-4">
+                <i class="bi bi-person-plus-fill me-2"></i>Yeni Eğitmen Ekle
+            </a>
+        </div>
+    }
+
+    <div class="trainer-grid">
+        @foreach (var item in Model)
+        {
+            var trainerImage = !string.IsNullOrWhiteSpace(item.ImageUrl)
+            ? item.ImageUrl
+            : "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=900&auto=format&fit=crop";
+
+            <div class="trainer-card">
+                <div class="trainer-img-container">
+                    <img src="@trainerImage" class="trainer-img" alt="@item.AdSoyad" />
+
+                    <div class="trainer-overlay">
+                        <div class="trainer-overlay-actions">
+
+                            <a asp-action="Details"
+                               asp-route-id="@item.Id"
+                               class="btn btn-outline-light rounded-pill px-4">
+                                İncele
+                            </a>
+
+                            @* Member girişliyse randevu alabilsin *@
+                            @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Member"))
+                            {
+                                <a asp-controller="Appointments"
+                                   asp-action="Create"
+                                   asp-route-trainerId="@item.Id"
+                                   class="btn btn-primary rounded-pill px-4">
+                                    Randevu Al
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trainer-info">
+                    <h3 class="mb-1 text-white">@item.AdSoyad</h3>
+                    <span class="trainer-specialty">@(item.UzmanlikNotu ?? "Uzman Eğitmen")</span>
+                    <hr class="border-secondary opacity-25">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="social-icons">
+                            <i class="bi bi-instagram text-muted me-2"></i>
+                            <i class="bi bi-twitter text-muted"></i>
+                        </div>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="admin-actions">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-link text-info p-0 me-2">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-link text-danger p-0">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

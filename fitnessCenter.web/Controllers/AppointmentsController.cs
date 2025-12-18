@@ -1,5 +1,6 @@
 ﻿using fitnessCenter.web.Data;
 using fitnessCenter.web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -33,13 +34,52 @@ namespace fitnessCenter.web.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return null;
 
+            // ✅ Senin modelinde alan adı bu: IdentityUserId
             return await _context.Members.FirstOrDefaultAsync(m => m.IdentityUserId == userId);
+        }
+
+        // ✅ Create GET için gerekli dropdownları doldurur
+        private async Task LoadFormData(int? selectedTrainerId = null, int? selectedMemberId = null, int? selectedServiceId = null)
+        {
+            ViewBag.TrainerId = new SelectList(
+                await _context.Trainers.ToListAsync(),
+                "Id",
+                "AdSoyad",
+                selectedTrainerId
+            );
+
+            ViewBag.ServiceId = new SelectList(
+                await _context.Services.ToListAsync(),
+                "Id",
+                "Ad",
+                selectedServiceId
+            );
+
+            // Admin üye seçebilir
+            if (IsAdmin())
+            {
+                ViewBag.MemberList = new SelectList(
+                    await _context.Members.ToListAsync(),
+                    "Id",
+                    "AdSoyad",
+                    selectedMemberId
+                );
+            }
+            else
+            {
+                var member = await GetCurrentMemberAsync();
+                if (member != null)
+                {
+                    ViewBag.CurrentMemberId = member.Id;
+                    ViewBag.CurrentMemberName = member.AdSoyad;
+                }
+            }
         }
 
         // ---------------------------------------------------------
         // GET: Appointments
         // Admin: tüm randevular
-        // Diğer girişli: sadece kendi randevuları
+        // Member: sadece kendi randevuları
         // ---------------------------------------------------------
         public async Task<IActionResult> Index()
         {
@@ -48,17 +88,13 @@ namespace fitnessCenter.web.Controllers
                 .Include(a => a.Trainer)
                 .Include(a => a.Service);
 
-            if (User.IsInRole("Admin"))
+            if (IsAdmin())
                 return View(await query.ToListAsync());
 
             if (!User.IsInRole("Member"))
                 return Unauthorized();
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var member = await _context.Members
-                .FirstOrDefaultAsync(m => m.IdentityUserId == userId);
-
+            var member = await GetCurrentMemberAsync();
             if (member == null)
                 return Unauthorized();
 
@@ -68,30 +104,38 @@ namespace fitnessCenter.web.Controllers
         // ---------------------------------------------------------
         // GET: Appointments/Create
         // Admin: üye seçer
-        // Diğer girişli: kendi üyesi sabit gelir
+        // Member: kendi üyesi sabit gelir
+        // trainerId gelirse trainer seçili gelsin
         // ---------------------------------------------------------
-        public async Task<IActionResult> Create()
+        [Authorize]
+        public async Task<IActionResult> Create(int? trainerId)
         {
             if (!IsSignedIn())
                 return Unauthorized();
 
-            if (IsAdmin())
+            // Member ise kendi MemberId sabit
+            int? memberId = null;
+
+            if (!IsAdmin())
             {
-                ViewBag.MemberList = new SelectList(_context.Members, "Id", "AdSoyad");
-            }
-            else
-            {
+                if (!User.IsInRole("Member"))
+                    return Unauthorized();
+
                 var member = await GetCurrentMemberAsync();
-                if (member == null) return Unauthorized();
+                if (member == null)
+                    return Unauthorized();
 
-                ViewBag.CurrentMemberId = member.Id;
-                ViewBag.CurrentMemberName = member.AdSoyad;
+                memberId = member.Id;
             }
 
-            ViewBag.ServiceId = new SelectList(_context.Services, "Id", "Ad");
-            ViewBag.TrainerId = new SelectList(_context.Trainers, "Id", "AdSoyad");
+            var appointment = new Appointment
+            {
+                MemberId = memberId ?? 0,         // Admin için 0 kalabilir, view'da dropdown seçer
+                TrainerId = trainerId ?? 0
+            };
 
-            return View();
+            await LoadFormData(trainerId, memberId, null);
+            return View(appointment);
         }
 
         // ---------------------------------------------------------
@@ -99,6 +143,7 @@ namespace fitnessCenter.web.Controllers
         // ---------------------------------------------------------
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create(Appointment model)
         {
             if (!IsSignedIn())
@@ -166,23 +211,7 @@ namespace fitnessCenter.web.Controllers
             }
 
             // dropdownlar tekrar dolsun
-            if (IsAdmin())
-            {
-                ViewBag.MemberList = new SelectList(_context.Members, "Id", "AdSoyad", model.MemberId);
-            }
-            else
-            {
-                var member = await GetCurrentMemberAsync();
-                if (member != null)
-                {
-                    ViewBag.CurrentMemberId = member.Id;
-                    ViewBag.CurrentMemberName = member.AdSoyad;
-                }
-            }
-
-            ViewBag.ServiceId = new SelectList(_context.Services, "Id", "Ad", model.ServiceId);
-            ViewBag.TrainerId = new SelectList(_context.Trainers, "Id", "AdSoyad", model.TrainerId);
-
+            await LoadFormData(model.TrainerId, model.MemberId, model.ServiceId);
             return View(model);
         }
 

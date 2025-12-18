@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace fitnessCenter.web.Models
@@ -28,5 +29,12 @@ namespace fitnessCenter.web.Models
 
         public ICollection<TrainerService> TrainerServices { get; set; }
       = new List<TrainerService>();
+
+
+        public string? ImageUrl { get; set; }
+
+
+
+
     }
 }
