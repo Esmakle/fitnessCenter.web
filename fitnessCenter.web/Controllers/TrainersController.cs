@@ -1,160 +1,4 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNetCore.Mvc.Rendering;
-//using Microsoft.EntityFrameworkCore;
-//using fitnessCenter.web.Data;
-//using fitnessCenter.web.Models;
-//using Microsoft.AspNetCore.Authorization;
-
-//namespace fitnessCenter.web.Controllers
-//{
-//    [Authorize(Roles = "Admin")]
-
-
-//    public class TrainersController : Controller
-//    {
-//        private readonly ApplicationDbContext _context;
-
-//        public TrainersController(ApplicationDbContext context)
-//        {
-//            _context = context;
-//        }
-
-//        // GET: Trainers
-//        public async Task<IActionResult> Index()
-//        {
-//            var trainers = _context.Trainers
-//                                   .Include(t => t.FitnessCenter);
-//            return View(await trainers.ToListAsync());
-//        }
-
-//        // GET: Trainers/Details/5
-//        public async Task<IActionResult> Details(int? id)
-//        {
-//            if (id == null)
-//                return NotFound();
-
-//            var trainer = await _context.Trainers
-//                .Include(t => t.FitnessCenter)
-//                .FirstOrDefaultAsync(m => m.Id == id);
-
-//            if (trainer == null)
-//                return NotFound();
-
-//            return View(trainer);
-//        }
-
-//        // GET: Trainers/Create
-//        public IActionResult Create()
-//        {
-//            // Dropdown: Value = Id, görünen metin = Ad
-//            ViewData["FitnessCenterId"] =
-//                new SelectList(_context.FitnessCenters, "Id", "Ad");
-//            return View();
-//        }
-
-//        // POST: Trainers/Create
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> Create([Bind("Id,FitnessCenterId,AdSoyad,UzmanlikNotu")] Trainer trainer)
-//        {
-//            if (ModelState.IsValid)
-//            {
-//                _context.Add(trainer);
-//                await _context.SaveChangesAsync();
-//                return RedirectToAction(nameof(Index));
-//            }
-
-//            ViewData["FitnessCenterId"] =
-//                new SelectList(_context.FitnessCenters, "Id", "Ad", trainer.FitnessCenterId);
-//            return View(trainer);
-//        }
-
-//        // GET: Trainers/Edit/5
-//        public async Task<IActionResult> Edit(int? id)
-//        {
-//            if (id == null)
-//                return NotFound();
-
-//            var trainer = await _context.Trainers.FindAsync(id);
-//            if (trainer == null)
-//                return NotFound();
-
-//            ViewData["FitnessCenterId"] =
-//                new SelectList(_context.FitnessCenters, "Id", "Ad", trainer.FitnessCenterId);
-//            return View(trainer);
-//        }
-
-//        // POST: Trainers/Edit/5
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> Edit(int id, [Bind("Id,FitnessCenterId,AdSoyad,UzmanlikNotu")] Trainer trainer)
-//        {
-//            if (id != trainer.Id)
-//                return NotFound();
-
-//            if (ModelState.IsValid)
-//            {
-//                try
-//                {
-//                    _context.Update(trainer);
-//                    await _context.SaveChangesAsync();
-//                }
-//                catch (DbUpdateConcurrencyException)
-//                {
-//                    if (!TrainerExists(trainer.Id))
-//                        return NotFound();
-//                    else
-//                        throw;
-//                }
-//                return RedirectToAction(nameof(Index));
-//            }
-
-//            ViewData["FitnessCenterId"] =
-//                new SelectList(_context.FitnessCenters, "Id", "Ad", trainer.FitnessCenterId);
-//            return View(trainer);
-//        }
-
-//        // GET: Trainers/Delete/5
-//        public async Task<IActionResult> Delete(int? id)
-//        {
-//            if (id == null)
-//                return NotFound();
-
-//            var trainer = await _context.Trainers
-//                .Include(t => t.FitnessCenter)
-//                .FirstOrDefaultAsync(m => m.Id == id);
-
-//            if (trainer == null)
-//                return NotFound();
-
-//            return View(trainer);
-//        }
-
-//        // POST: Trainers/Delete/5
-//        [HttpPost, ActionName("Delete")]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> DeleteConfirmed(int id)
-//        {
-//            var trainer = await _context.Trainers.FindAsync(id);
-//            if (trainer != null)
-//            {
-//                _context.Trainers.Remove(trainer);
-//            }
-
-//            await _context.SaveChangesAsync();
-//            return RedirectToAction(nameof(Index));
-//        }
-
-//        private bool TrainerExists(int id)
-//        {
-//            return _context.Trainers.Any(e => e.Id == id);
-//        }
-//    }
-//}
+﻿
 using fitnessCenter.web.Data;
 using fitnessCenter.web.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -167,10 +11,44 @@ public class TrainersController : Controller
     private readonly ApplicationDbContext _context;
     public TrainersController(ApplicationDbContext context) => _context = context;
 
-    // ✅ herkes görsün
-    [AllowAnonymous]
+
+    private static readonly string[] DemoImages =
+{
+    "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=900&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1550345332-09e3ac987658?q=80&w=900&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?q=80&w=900&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1517963879433-6ad2b056d712?q=80&w=900&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1546483875-ad9014c88eba?q=80&w=900&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1558611848-73f7eb4001a1?q=80&w=900&auto=format&fit=crop",
+};
+
+
+
     public async Task<IActionResult> Index()
-        => View(await _context.Trainers.ToListAsync());
+    {
+        // ✅ 1 kez çalışsın diye: ImageUrl boş olanlara otomatik görsel ata
+        var trainers = await _context.Trainers.ToListAsync();
+        bool changed = false;
+
+        for (int i = 0; i < trainers.Count; i++)
+        {
+            if (string.IsNullOrWhiteSpace(trainers[i].ImageUrl))
+            {
+                trainers[i].ImageUrl = DemoImages[i % DemoImages.Length];
+                changed = true;
+            }
+        }
+
+        if (changed)
+            await _context.SaveChangesAsync();
+
+        return View(trainers);
+    }
+
+    // ✅ herkes görsün
+    //[AllowAnonymous]
+    //public async Task<IActionResult> Index()
+    //    => View(await _context.Trainers.ToListAsync());
 
     // ✅ herkes detay görsün
     [AllowAnonymous]
